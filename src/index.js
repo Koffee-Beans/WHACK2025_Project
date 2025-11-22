@@ -1,5 +1,7 @@
 import Home from './pages/home.js';
-import About from './pages/contact.js';
+import Contact from './pages/contact.js';
+import Login from './pages/login.js';
+import Quiz from './pages/quiz.js';
 import './style.css';
 
 const app = document.getElementById('app');
@@ -7,10 +9,15 @@ const app = document.getElementById('app');
 function router() {
   const hash = window.location.hash.replace('#', '');
   switch (hash) {
-    case 'about':
-      app.innerHTML = About;
+    case 'contact':
+      app.innerHTML = Contact;
       break;
-    case 'home':
+    case 'login':
+        app.innerHTML = Login;
+        break;
+    case 'quiz':
+        Quiz(app);
+        break;
     default:
       Home(app);
       break;

@@ -4,8 +4,8 @@ const HomeHTML = `
       <h1 class="text-2xl font-bold">EduLearn</h1>
       <nav class="space-x-6 text-lg">
         <a href="#home" class="hover:text-blue-600">Home</a>
-        <a href="#about" class="hover:text-blue-600">About</a>
-        <a href="#features" class="hover:text-blue-600">Features</a>
+        <a href="#contact" class="hover:text-blue-600">Contact</a>
+        <a href="#login" class="hover:text-blue-600">Login</a>
       </nav>
     </div>
   </header>
@@ -46,21 +46,18 @@ const HomeHTML = `
 // Function to render Home and attach listeners
 function Home(container) {
   container.innerHTML = HomeHTML;
-
-  // Add button listener to route to About page
-  const getStartedBtn = document.getElementById('getStartedBtn');
-  if (getStartedBtn) {
-    getStartedBtn.addEventListener('click', () => {
-      window.location.hash = 'about';
+  const contactLink = container.querySelector('a[href="#contact"]');
+  const loginLink = container.querySelector('a[href="#login"]');
+  if (contactLink) {
+    contactLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.hash = 'contact';
     });
   }
-
-  // Optional: Attach About link listener
-  const aboutLink = container.querySelector('a[href="#about"]');
-  if (aboutLink) {
-    aboutLink.addEventListener('click', (e) => {
+  else if(loginLink){
+    contactLink.addEventListener('click', (e) => {
       e.preventDefault();
-      window.location.hash = 'about';
+      window.location.hash = 'login';
     });
   }
 }

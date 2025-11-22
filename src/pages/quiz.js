@@ -1,0 +1,236 @@
+const QuizHTML = `
+<div class="w-screen h-screen bg-gray-100 flex flex-col">
+
+  <!-- Header -->
+  <header class="flex justify-between items-center bg-white shadow-md p-6">
+    <h1 class="text-3xl font-bold">Quiz Time!</h1>
+    <div class="text-xl font-semibold">
+      Time: <span id="timer">60</span>s
+    </div>
+  </header>
+
+  <!-- Quiz content -->
+  <main class="flex-1 flex flex-col justify-center items-center p-6">
+    <div id="quiz-container" class="w-full max-w-4xl flex flex-col gap-6">
+
+      <!-- Question progress indicators -->
+      <div id="question-progress" class="flex justify-center gap-2 mb-4">
+        <!-- Boxes will be generated dynamically via JS -->
+      </div>
+
+      <!-- Question -->
+      <div id="question" class="text-2xl font-medium text-center"></div>
+
+      <!-- Answer buttons -->
+      <div id="answers" class="grid gap-4 md:grid-cols-2">
+        <!-- Answer buttons generated here -->
+      </div>
+
+      <!-- Next/Submit button -->
+      <div class="mt-4 flex flex-col md:flex-row justify-center items-center gap-4">
+        <button id="previous-btn" class="flex-1 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
+          Previous Question
+        </button>
+        <button id="submit-btn" class="flex-1 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
+          Submit
+        </button>
+        <button id="next-btn" class="flex-1 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
+          Next Question
+        </button>
+      </div>
+
+      <!-- Result -->
+      <div id="result" class="mt-6 text-center text-2xl font-bold hidden"></div>
+
+    </div>
+  </main>
+</div>
+
+`;
+
+function Quiz(container) {
+  container.innerHTML = QuizHTML;
+
+  const quizData = [
+    { question: "What is the capital of France?", answers: ["Paris", "London", "Berlin", "Madrid"], correct: "Paris" },
+    { question: "Which planet is known as the Red Planet?", answers: ["Earth", "Mars", "Jupiter", "Venus"], correct: "Mars" },
+    { question: "Who wrote 'Hamlet'?", answers: ["Mark Twain", "Charles Dickens", "William Shakespeare", "Leo Tolstoy"], correct: "William Shakespeare" },
+    { question: "What is the largest ocean on Earth?", answers: ["Atlantic", "Indian", "Pacific", "Arctic"], correct: "Pacific" },
+    { question: "Which element has the chemical symbol 'O'?", answers: ["Gold", "Oxygen", "Silver", "Hydrogen"], correct: "Oxygen" }
+  ];
+  const selectedButton = new Map();
+  const selectedAnswer = new Map();
+
+  let currentQuestion = 0;
+  let score = 0;
+  let timer = 60;
+  let timerInterval;
+
+  const questionEl = document.getElementById('question');
+  const answersEl = document.getElementById('answers');
+  const nextBtn = document.getElementById('next-btn');
+  const previousBtn = document.getElementById('previous-btn');
+  const submitBtn = document.getElementById('submit-btn');
+  const resultEl = document.getElementById('result');
+  const timerEl = document.getElementById('timer');
+
+    const progressContainer = document.getElementById("question-progress");
+
+    for (let i = 0; i < quizData.length; i++) {
+    const box = document.createElement("button");
+    box.classList.add("w-6", "h-6", "rounded-full", "bg-gray-300");
+    box.id = `progress-${i}`;
+    progressContainer.appendChild(box);
+    }
+
+    function updateProgress(currentIndex, updateType) {
+    for (let i = 0; i < quizData.length; i++) {
+        const box = document.getElementById(`progress-${i}`);
+        if (i === currentIndex) {
+            if(updateType == 0){
+                box.classList.replace("bg-gray-300", "bg-gray-500");
+            }
+            else if(updateType == 1){
+                box.classList.replace("bg-gray-500", "bg-blue-500");
+            }
+            else if(box.classList.contains('bg-blue-300')){
+                box.classList.replace("bg-blue-300", "bg-blue-500");
+            }
+        }
+        else if(!box.classList.contains('bg-blue-500')){
+            box.classList.replace("bg-gray-500", "bg-gray-300");
+        }
+        else if(box.classList.contains('bg-blue-500')){
+            box.classList.replace("bg-blue-500", "bg-blue-300");
+        }
+    }
+    }
+
+  function startTimer() {
+    timerInterval = setInterval(() => {
+      timer--;
+      timerEl.textContent = timer;
+      if (timer <= 0) {
+        clearInterval(timerInterval);
+        submitQuiz();
+      }
+    }, 1000);
+  }
+
+  function loadQuestion() {
+    const current = quizData[currentQuestion];
+    questionEl.textContent = current.question;
+    answersEl.innerHTML = '';
+    current.answers.forEach(answer => {
+      const btn = document.createElement('button');
+      btn.textContent = answer;
+      if(answer == selectedAnswer.get(currentQuestion)){
+        btn.className = 'bg-gray-400 text-white hover:bg-gray-300 py-2 px-4 rounded w-full text-left';
+      }
+      else{
+        btn.className = 'bg-gray-200 hover:bg-gray-300 py-2 px-4 rounded w-full text-left';
+      }
+      btn.addEventListener('click', () => selectAnswer(answer, btn));
+      answersEl.appendChild(btn);
+      if(!selectedAnswer.has(currentQuestion)){
+        updateProgress(currentQuestion, 0);
+      }
+      else{
+        updateProgress(currentQuestion, 2);
+      }
+    });
+
+    // Change button text if last question
+    //nextBtn.textContent = currentQuestion === quizData.length - 1 ? "Submit" : "Next Question";
+  }
+
+  function selectAnswer(answer, btn) {
+    const correctAnswer = quizData[currentQuestion].correct;
+    if(selectedButton.has(currentQuestion)){
+        selectedButton.get(currentQuestion).classList.remove('bg-gray-400', 'text-white');
+        selectedButton.get(currentQuestion).disabled = false;
+    }
+    else{
+        updateProgress(currentQuestion, 1);
+    }
+    selectedButton.set(currentQuestion, btn);
+    selectedAnswer.set(currentQuestion, answer);
+    btn.classList.add('bg-gray-400', 'text-white');
+    btn.disabled = true;
+    nextBtn.disabled = false;
+  }
+
+  nextBtn.addEventListener('click', () => {
+    if(currentQuestion < quizData.length - 1){
+        if(currentQuestion == 0){
+            previousBtn.classList.remove('bg-gray-200', 'hover:bg-gray-300');
+        }
+        currentQuestion++;
+        previousBtn.enabled = true;
+        loadQuestion();
+    }
+    if(currentQuestion >= quizData.length - 1){
+        nextBtn.classList.add('bg-gray-200', 'hover:bg-gray-300');
+        nextBtn.enabled = false;
+    }
+  });
+  previousBtn.addEventListener('click', () =>{
+    if(currentQuestion > 0){
+        if(currentQuestion == quizData.length - 1){
+            nextBtn.classList.remove('bg-gray-200', 'hover:bg-gray-300');
+        }
+        currentQuestion--;
+        nextBtn.enabled = true;
+        loadQuestion();
+    }
+    if(currentQuestion <= 0){
+        previousBtn.classList.add('bg-gray-200', 'hover:bg-gray-300');
+        previousBtn.enabled = false;
+    }
+  })
+  submitBtn.addEventListener('click', () =>{
+    submitQuiz();
+  })
+  for(let i = 0; i < quizData.length; i++){
+    const box = document.getElementById(`progress-${i}`);
+    box.addEventListener('click', () =>{
+        currentQuestion = i;
+        if(currentQuestion <= 0){
+            previousBtn.classList.add('bg-gray-200', 'hover:bg-gray-300');
+            previousBtn.enabled = false;
+        }
+        if(currentQuestion >= quizData.length - 1){
+            nextBtn.classList.add('bg-gray-200', 'hover:bg-gray-300');
+            nextBtn.enabled = false;
+        }
+        loadQuestion();
+    })
+  }
+
+  function submitQuiz() {
+    clearInterval(timerInterval);
+    questionEl.classList.add('hidden');
+    answersEl.classList.add('hidden');
+    nextBtn.classList.add('hidden');
+    previousBtn.classList.add('hidden');
+    submitBtn.classList.add('hidden');
+    for (let i = 0; i < quizData.length; i++) {
+        const box = document.getElementById(`progress-${i}`);
+        box.classList.add('hidden');
+    }
+    selectedAnswer.forEach((v, k) => {
+        const correctAnswer = quizData[k].correct;
+        if(v == correctAnswer){
+            score++;
+        }
+    })
+    resultEl.textContent = `You scored ${score} out of ${quizData.length}!`;
+    resultEl.classList.remove('hidden');
+  }
+
+  // Start quiz
+  loadQuestion();
+  startTimer();
+}
+
+export default Quiz;
