@@ -8,6 +8,8 @@ import mongoose from 'mongoose';
 
 const Problem = mongoose.model('Problem');
 
+const stopSelector = 'h1, h2, h3, h4, h5, h6'
+
 async function fetchProblemData(year, level, version, number) {
     const url = `https://artofproblemsolving.com/wiki/index.php/${year}_AMC_${level}${version}_Problems/Problem_${number}`;
     try {
@@ -15,16 +17,32 @@ async function fetchProblemData(year, level, version, number) {
 
         const $ = load(data);
 
-        const problem = $('#Problem').closest('h2').next('p').html().trim();
+        const problemElements = $('#Problem').closest('h2').nextUntil(stopSelector).slice(0, -1);
+
+        let problem = '';
+        problemElements.each(function() {
+            problem += $(this).html().trim() + '\n';
+        });
 
         const answerChoices = [];
-        const imgAltText = $('#Problem').closest('h2').next('p').next('p').find('img').attr('alt');
+        const imgAltTexts = []
+
+        $('#Problem').closest('h2').nextUntil(stopSelector).last().find('img').each( (_, imgElement) => {
+            if ($(imgElement).next().is('h2')) {
+                    imgAltTexts.push($(imgElement).attr('alt').trim());
+                    return false;
+                }
+            imgAltTexts.push($(imgElement).attr('alt').trim());
+        });
+
+        const imgAltText = imgAltTexts.join(' ')
 
         if (imgAltText) {
-            const regex = /\\textbf{(\([A-E]\))\s*}(.*?)(?:\\qquad|\$)/g;
+            const cleanedAltText = imgAltText.replace(/\s/g, '');
+            const regex = /([A-E])[\}\)\s]*([\s\S]*?)(?=(?:\\qquad|\$))/g;
             let match;
-            while ((match = regex.exec(imgAltText)) !== null) {
-                answerChoices.push(`${match[1]} ${match[2].trim()}`);
+            while ((match = regex.exec(cleanedAltText)) !== null) {
+                answerChoices.push(`${match[2].trim()}`);
             }
         }
 
@@ -39,6 +57,7 @@ async function fetchProblemData(year, level, version, number) {
             if (h2Text.startsWith('Solution')) {
                 $(h2Element).nextAll('p').each((_, pElement) => {
                     if ($(pElement).next().is('h2')) {
+                        currentSolution.push($(pElement).html().trim());
                         return false;
                     }
                     currentSolution.push($(pElement).html().trim());
@@ -50,25 +69,43 @@ async function fetchProblemData(year, level, version, number) {
             }
         });
         
-        const correctAnswer = null;
-        const contest = [year, level, version, number];
-        const category = { alg: false, combo: false, geo: false, nt: false };
-
-        return { problem, answers, correctAnswer, solutions, contest, category };
+        return { problem, answers, solutions };
     } catch (error) {
         console.error('Error fetching data:', error);
     }
 }
 
-// TODO: second scrape to get correct answer
+async function fetchCorrectAnswer(year, level, version, number) {
+    const url = `https://artofproblemsolving.com/wiki/index.php?title=${year}_AMC_${level}${version}_Answer_Key`;
+    try {
+        const { data } = await axios.get(url);
+
+        const $ = load(data);
+
+        const correctAnswer = $('ol li').eq(number - 1).html().trim();
+
+        return correctAnswer;
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
 
 // TODO: function to save to mongo
 
 async function main() {
     // TODO: loop over all below variables
-    const year = 2025, level = 12, version = 'A', number = 1;
-    const problemData = await fetchProblemData(year, level, version, number);
-    console.log(problemData)
+    for (let year = 2002; year <= 2025; year++) {
+        const level = 12, version = 'B', number = 1;
+        const contest = [year, level, version, number];
+        const { problem, answers, solutions } = await fetchProblemData(year, level, version, number);
+
+        const correctAnswer = await fetchCorrectAnswer(year, level, version, number);
+        const category = { alg: false, combo: false, geo: false, nt: false };
+
+        const fullData = { problem, answers, correctAnswer, solutions, contest, category };
+        console.log(fullData);
+    }
     // TODO: save to mongo call function above
 }
 
