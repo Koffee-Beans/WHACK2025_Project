@@ -23,9 +23,13 @@ router.get('/discord/callback',
 );
 
 router.get('/logout', (req, res) => {
-    req.logout();
-    console.log('User logged out');
-    res.redirect('/');
+    req.logout((err) => {
+        if (err) {
+            console.error('Logout error:', err);
+        }
+        console.log('User logged out')
+        res.redirect('/');
+    });
 });
 
 export default router;
