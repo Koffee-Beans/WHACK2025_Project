@@ -3,9 +3,9 @@ const HomeHTML = `
     <div class="max-w-6xl mx-auto flex justify-between items-center px-4">
       <h1 class="text-2xl font-bold">EduLearn</h1>
       <nav class="space-x-6 text-lg">
-        <a href="#home" class="hover:text-blue-600">Home</a>
-        <a href="#contact" class="hover:text-blue-600">Contact</a>
-        <a href="#login" class="hover:text-blue-600">Login</a>
+        <a href="home" class="hover:text-blue-600">Home</a>
+        <a href="contact" class="hover:text-blue-600">Contact</a>
+        <a href="login/discord" class="hover:text-blue-600">Login</a>
       </nav>
     </div>
   </header>
@@ -46,18 +46,25 @@ const HomeHTML = `
 // Function to render Home and attach listeners
 function Home(container) {
   container.innerHTML = HomeHTML;
-  const contactLink = container.querySelector('a[href="#contact"]');
-  const loginLink = container.querySelector('a[href="#login"]');
+  const contactLink = container.querySelector('a[href="contact"]');
+  const loginLink = container.querySelector('a[href="login"]');
   if (contactLink) {
-    contactLink.addEventListener('click', (e) => {
+    contactLink.addEventListener('click', async (e) => {
       e.preventDefault();
       window.location.hash = 'contact';
     });
   }
   else if(loginLink){
-    contactLink.addEventListener('click', (e) => {
+    contactLink.addEventListener('click', async (e) => {
       e.preventDefault();
+      /*
       window.location.hash = 'login';
+      */
+     const formData = new FormData(e.target);
+    await fetch('/login', {
+      method: 'POST',
+      body: formData
+    });
     });
   }
 }

@@ -6,6 +6,7 @@ import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
 
+
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -17,7 +18,7 @@ const __dirname = path.dirname(__filename);
 
 const User = mongoose.model('User');
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({ extended: false }));
 
 app.use(session({
@@ -32,7 +33,14 @@ app.use(passport.session());
 app.use('/login', loginRoutes);
 
 app.get('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
+
+/*
+
+app.get('/', (req, res) => {
     res.redirect('/login');
 });
+*/
 
 app.listen(process.env.PORT || 3000);
