@@ -20,7 +20,12 @@
   },
   "homepage": "https://github.com/Koffee-Beans/WHACK2025_Project#readme",
   "dependencies": {
+<<<<<<< HEAD
     "@tailwindcss/vite": "^4.1.17",
+=======
+    "axios": "^1.13.2",
+    "cheerio": "^1.1.2",
+>>>>>>> aaronBranch
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "express-session": "^1.18.2",
