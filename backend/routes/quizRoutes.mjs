@@ -1,5 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 const router = express.Router();
 const Problem = mongoose.model('Problem');
@@ -31,5 +32,9 @@ router.get('/api/problems/random', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch problems' });
     }
 });
+
+router.get('/api/random-id', async (req, res) => {
+    res.json({ id: uuidv4() });
+})
 
 export default router;
