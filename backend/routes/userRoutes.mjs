@@ -9,12 +9,16 @@ router.get('/api/current-user', async (req, res) => {
             res.json(null);
         }
         else {
+<<<<<<< HEAD
             const user = await User.findOne({ discordId: req.user.discordId });
             if (!user) {
                 res.json(null);
             } else {
                 res.json(user);
             }
+=======
+            res.json({ discordId: req.user.discordId });
+>>>>>>> aaronBranch
         }
 });
 
