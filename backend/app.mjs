@@ -13,6 +13,7 @@ import { fileURLToPath } from 'url';
 
 import loginRoutes from './routes/loginRoutes.mjs';
 import quizRoutes from './routes/quizRoutes.mjs';
+import userRoutes from './routes/userRoutes.mjs';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -34,6 +35,7 @@ app.use(passport.session());
 
 app.use('/login', loginRoutes);
 app.use(quizRoutes);
+app.use(userRoutes);
 
 app.use((req, res, next) => {
     if (!req.user) {

@@ -47,3 +47,4 @@ const Problem = new mongoose.Schema({
 
 mongoose.model('User', User);
 mongoose.model('Problem', Problem);
+mongoose.model('ProblemHistory', ProblemHistory);
