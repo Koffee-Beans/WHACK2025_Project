@@ -4,6 +4,20 @@ import mongoose from 'mongoose';
 const router = express.Router();
 const User = mongoose.model('User');
 
+router.get('/api/current-user', async (req, res) => {
+    if (!req.user) {
+            res.json(null);
+        }
+        else {
+            const user = await User.findOne({ discordId: req.user.discordId });
+            if (!user) {
+                res.json(null);
+            } else {
+                res.json(user);
+            }
+        }
+});
+
 router.get('/api/user/:id', async (req, res) => {
     const { id } = req.params;
     try {
