@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
         res.send('login page');
     }
     else {
-        res.send('logged in');
+        res.redirect('/dashboard');
     }
 })
 
@@ -18,7 +18,7 @@ router.get('/discord/callback',
     passport.authenticate('discord', { failureRedirect: '/' }),
     (req, res) => {
         console.log(`User authenticated: ${req.user.username}`);
-        res.redirect('/login');
+        res.redirect('/dashboard');
     }
 );
 
