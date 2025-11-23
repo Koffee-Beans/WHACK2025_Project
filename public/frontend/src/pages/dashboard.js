@@ -1,7 +1,6 @@
 import { navigate } from "../index.js";
 
 const DashboardHTML = `
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
 <div class="fixed inset-0 bg-blueblur bg-cover bg-center bg-fixed z-0">
 
   <div class="relative z-10 font-sans">
@@ -137,7 +136,7 @@ const DashboardHTML = `
     </button>
 
     <!-- Header -->
-    <h2 class="text-2xl font-bold mb-2">Quiz Title</h2>
+    <h2 id="question" class="text-2xl font-medium text-center">Test</h2>
     
     <!-- Subtext -->
     <p class="text-gray-600 mb-6">This is a description or instructions for the quiz question.</p>
@@ -184,6 +183,8 @@ async function Dashboard(container) {
   document.getElementById('correctQ').textContent = userData.statistics.problemHistory.reduce((acc, e) => acc + e.timesAttempted, 0);
   document.getElementById('incorrectQ').textContent = userData.statistics.problemHistory.reduce((acc, e) => acc + e.timesSolvedCorrectly, 0) - 
     userData.statistics.problemHistory.reduce((acc, e) => acc + e.timesAttempted, 0);
+
+  console.log(userData);
 
   // --- CHAT ---
   const chatButton = document.getElementById('chatButton');

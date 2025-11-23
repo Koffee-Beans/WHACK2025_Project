@@ -1,50 +1,44 @@
 const QuizHTML = `
-<div class="w-screen h-screen bg-gray-100 flex flex-col">
+<div class="fixed inset-0 bg-cover bg-center bg-fixed z-0 bg-blueblur"></div>
+<div class="relative w-screen h-screen bg-gray-100/70 backdrop-blur-sm flex flex-col z-10">
 
-  <!-- Header -->
-  <header class="flex justify-between items-center bg-white shadow-md p-6">
-    <h1 class="text-3xl font-bold">Quiz Time!</h1>
-    <div class="text-xl font-semibold">
-      Time: <span id="timer">60</span>s
+<header class="w-full py-6 bg-paleGray-50 shadow fixed top-0 left-0 z-40">
+  <div class="max-w-6xl mx-auto flex justify-between items-center px-4">
+    <h1 class="text-2xl font-bold text-white">EduLearn</h1>
+    <nav class="space-x-6 text-lg">
+      <a id="homeButton" href="/dashboard" class="text-white hover:text-blue-600">Return Home</a>
+    </nav>
+  </div>
+</header>
+
+<main class="flex-1 flex flex-col justify-center items-center p-6">
+  <div id="quiz-container" class="w-full max-w-4xl flex flex-col gap-6">
+
+    <div id="question-progress" class="flex justify-center gap-2 mb-4"></div>
+
+    <div id="question" class="text-2xl font-medium text-center"></div>
+
+    <div id="answers" class="grid gap-4 md:grid-cols-2"></div>
+
+    <div class="mt-4 flex flex-col md:flex-row justify-center items-center gap-4">
+      <button id="previous-btn" class="flex-1 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
+        Previous Question
+      </button>
+      <button id="submit-btn" class="flex-1 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
+        Submit
+      </button>
+      <button id="next-btn" class="flex-1 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
+        Next Question
+      </button>
     </div>
-  </header>
 
-  <!-- Quiz content -->
-  <main class="flex-1 flex flex-col justify-center items-center p-6">
-    <div id="quiz-container" class="w-full max-w-4xl flex flex-col gap-6">
+    <div id="result" class="mt-6 text-center text-2xl font-bold hidden"></div>
 
-      <!-- Question progress indicators -->
-      <div id="question-progress" class="flex justify-center gap-2 mb-4">
-        <!-- Boxes will be generated dynamically via JS -->
-      </div>
+  </div>
+</main>
 
-      <!-- Question -->
-      <div id="question" class="text-2xl font-medium text-center"></div>
-
-      <!-- Answer buttons -->
-      <div id="answers" class="grid gap-4 md:grid-cols-2">
-        <!-- Answer buttons generated here -->
-      </div>
-
-      <!-- Next/Submit button -->
-      <div class="mt-4 flex flex-col md:flex-row justify-center items-center gap-4">
-        <button id="previous-btn" class="flex-1 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
-          Previous Question
-        </button>
-        <button id="submit-btn" class="flex-1 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
-          Submit
-        </button>
-        <button id="next-btn" class="flex-1 bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">
-          Next Question
-        </button>
-      </div>
-
-      <!-- Result -->
-      <div id="result" class="mt-6 text-center text-2xl font-bold hidden"></div>
-
-    </div>
-  </main>
 </div>
+
 
 `;
 
@@ -78,6 +72,9 @@ async function Quiz(container) {
   const submitBtn = document.getElementById('submit-btn');
   const resultEl = document.getElementById('result');
   const timerEl = document.getElementById('timer');
+
+  const homeBtn = document.getElementById('homeButton');
+  homeBtn.classList.add('hidden');
 
     const progressContainer = document.getElementById("question-progress");
 
@@ -218,6 +215,7 @@ async function Quiz(container) {
     nextBtn.classList.add('hidden');
     previousBtn.classList.add('hidden');
     submitBtn.classList.add('hidden');
+    homeBtn.classList.remove('hidden');
 
     let finalScore = 0;
     let problemHistoryUpdates = [];  // Ensure this is initialized here
