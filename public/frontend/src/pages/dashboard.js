@@ -24,11 +24,10 @@ const DashboardHTML = `
     <!-- Main Content -->
     <div class="flex-1 flex flex-col overflow-auto">
       
-      <!-- Top Navbar -->
-      <header class="flex items-center justify-between bg-white p-4 shadow">
+      <header class="flex items-center justify-between bg-paleGray-50 p-4 shadow">
         <div class="text-xl font-semibold">Dashboard</div>
         <div class="flex items-center space-x-4">
-          <input type="text" placeholder="Search..." class="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <a href="/login/logout" class="text-white bg-paleGray hover:bg-darkBlue px-3 py-2 border rounded-md">Sign Out</a>
           <div class="relative">
             <img src="https://i.pravatar.cc/32" alt="User Avatar" class="rounded-full">
           </div>

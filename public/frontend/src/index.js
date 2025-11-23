@@ -26,7 +26,8 @@ function router() {
       console.log("run");
       app.innerHTML = Contact;
       break;
-    case '/login':
+    case '/login/discord':
+      console.log("idk");
       app.innerHTML = Login;
       break;
     case '/quiz':
