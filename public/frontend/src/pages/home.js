@@ -6,8 +6,6 @@ const HomeHTML = `
   <div class="max-w-6xl mx-auto flex justify-between items-center px-4">
     <h1 class="text-2xl font-bold text-white">EduLearn</h1>
     <nav class="space-x-6 text-lg">
-      <a href="home" class="text-white hover:text-blue-600">Home</a>
-      <a href="contact" class="text-white hover:text-blue-600">Contact</a>
       <a href="login/discord" class="text-white hover:text-blue-600">Login</a>
     </nav>
   </div>
@@ -32,28 +30,72 @@ const HomeHTML = `
   </a>
 </section>
 
-<!-- MAIN CONTENT -->
-<div class="relative z-30 mt-[75vh]">
+<div id="mainContent"
+     class="relative z-30 mt-[75vh] opacity-0 translate-y-20 transition-all duration-500">
+
+  <!-- FIRST SECTION (animated) -->
   <section id="features"
-           class="w-screen mx-auto px-4 py-32 grid md:grid-cols-3 gap-10 bg-white">
-    <div class="p-6 bg-white shadow rounded-xl">
-      <h3 class="text-xl font-semibold mb-2">Expert Instructors</h3>
-      <p class="text-gray-600">Learn from industry professionals with years of experience.</p>
+           class="relative w-full mx-auto px-4 py-64 grid md:grid-cols-3 gap-10 bg-paleGray">
+
+    <!-- Overlay Image bounded to the section -->
+    <div class="absolute top-0 right-0 w-3/4 h-full z-0 overflow-hidden rounded-xl">
+      <img 
+        src="frontend/images/MathCover.png" 
+        alt="Overlay Image"
+        class="w-full h-full object-cover"
+      >
     </div>
-    <div class="p-6 bg-white shadow rounded-xl">
-      <h3 class="text-xl font-semibold mb-2">Curated Courses</h3>
-      <p class="text-gray-600">Access structured and comprehensive educational resources.</p>
-    </div>
-    <div class="p-6 bg-white shadow rounded-xl">
-      <h3 class="text-xl font-semibold mb-2">Flexible Learning</h3>
-      <p class="text-gray-600">Study at your own pace with our flexible learning options.</p>
+
+    <!-- Feature Cards -->
+    <div class="p-6 bg-white shadow rounded-xl relative z-10">
+      <h3 class="text-xl font-semibold mb-2">
+        What if there was a faster way to improve in mathematics?
+      </h3>
+      <p class="text-gray-600">
+        Your time is precious, so treat it as such. Instead of organizing thousands of practice problems 
+        and keeping track of your progress, let us do the hard work for you
+      </p>
     </div>
   </section>
 
-  <footer class="bg-gray-900 text-white py-6 text-center mt-10">
-    <p>© 2025 EduLearn. All rights reserved.</p>
-  </footer>
+  <!-- SECOND SECTION (no animations) -->
+  <section id="moreContent"
+           class="w-full px-4 py-40 bg-white text-center">
+    <h2 class="text-4xl font-bold mb-6 text-gray-800">
+      Don't just solve problems
+    </h2>
+    <div class="p-6 bg-white grid md:grid-cols-3 gap-10 shadow rounded-xl relative z-10">
+      <h3 class="text-xl font-semibold mb-2">
+        Access detailed step breakdowns of problems
+      </h3>
+      <h3 class="text-xl font-semibold mb-2">
+      Track your progress overtime to see improvement
+      </h3>
+      <h3 class="text-xl font-semibold mb-2">
+      Scan your work to understand exactly where 
+      you went wrong and how you can improve in the future
+      </h3>
+    </div>
+  </section>
+
+  <section id="moreMoreContent"
+  class="w-full px-4 py-40 bg-white text-center">
+
+  <h2 class="text-4xl font-bold mb-6 text-gray-800">
+    What are you waiting for?
+  </h2>
+
+  <a href="login/discord"
+    class="px-10 py-4 text-2xl font-semibold bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 hover:scale-105 transition-all duration-300">
+    Start Improving Today
+  </a>
+
+</section>
+
+
 </div>
+
+
 </div>
 `;
 
@@ -64,12 +106,25 @@ function Home(container) {
   const discordLogin = document.getElementById('discordLogin');
   //const loginLink = container.querySelector('button[href="login/discord"]');
   const hero = document.getElementById('heroText');
+  const mainContent = document.getElementById('mainContent');
   window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
+
+    // HERO FADE + SLIDE
     hero.style.transform = `translateY(-${scrollY * 0.5}px)`;
-    console.log(scrollY);
     hero.style.opacity = Math.max(1 - scrollY / 400, 0);
+
+    const triggerPoint = 100;
+    if (scrollY > triggerPoint) {
+      const progress = Math.min((scrollY - triggerPoint) / 300, 1);
+      mainContent.style.opacity = progress;
+      mainContent.style.transform = `translateY(${20 - progress * 20}px)`;
+    } else {
+      mainContent.style.opacity = 0;
+      mainContent.style.transform = "translateY(20px)";
+    }
   });
+  
   if (contactLink) {
     contactLink.addEventListener('click', async (e) => {
       e.preventDefault();

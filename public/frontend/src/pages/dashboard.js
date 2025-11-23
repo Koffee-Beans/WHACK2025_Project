@@ -1,184 +1,222 @@
 import { navigate } from "../index.js";
 
 const DashboardHTML = `
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
 <div class="fixed inset-0 bg-blueblur bg-cover bg-center bg-fixed z-0">
 
-<div class="relative z-10 font-sans">
+  <div class="relative z-10 font-sans">
 
-  <div class="flex h-screen">
+    <div class="flex h-screen">
 
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-auto">
-      
-      <header class="flex items-center justify-between bg-paleGray-50 p-4 shadow">
-        <div class="text-white text-xl font-semibold">Dashboard</div>
-        <div class="flex items-center space-x-4">
-          <a href="/login/logout" class="text-white bg-paleGray hover:bg-darkBlue px-3 py-2 border rounded-md">Sign Out</a>
-          <div class="relative">
-            <p id="username" class="block px-4 py-2 rounded font-medium text-darkBlue"></p>
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col overflow-auto">
+
+        <header class="flex items-center justify-between bg-paleGray-50 p-4 shadow">
+          <div class="text-white text-xl font-semibold">Dashboard</div>
+          <div class="flex items-center space-x-4">
+            <a href="/quiz" class="text-white bg-paleGray hover:bg-darkBlue px-3 py-2 border rounded-md">Take a Quiz</a>
+            <a href="/login/logout" class="text-white bg-paleGray hover:bg-darkBlue px-3 py-2 border rounded-md">Sign Out</a>
           </div>
-        </div>
-      </header>
+        </header>
 
-<!-- Greeting Header -->
-<div class="w-full flex flex-col items-center justify-center text-center mt-10">
-  <h1 class="text-4xl font-bold text-white drop-shadow-md">
-    Welcome back, <span id="greetingName"></span>!
-  </h1>
-  <p class="text-lg text-gray-200 mt-2 drop-shadow">
-    Here's your latest dashboard overview.
-  </p>
+        <!-- Greeting Header -->
+        <div class="w-full flex flex-col items-center justify-center text-center mt-10">
+          <h1 id="username" class="text-4xl font-bold text-white drop-shadow-md">
+            Welcome back, <span id="greetingName"></span>!
+          </h1>
+          <p class="text-lg text-gray-200 mt-2 drop-shadow">
+            Here's your latest stats
+          </p>
+        </div>
+
+        <!-- Dashboard Content -->
+        <main class="p-6 flex flex-col items-center space-y-6">
+
+          <!-- Summary Cards -->
+          <div class="flex justify-center items-center gap-4 w-full max-w-4xl">
+            <div class="bg-lightBlue p-6 rounded-lg shadow flex flex-col items-center">
+              <div class="text-sm">Lifetime questions correct</div>
+              <div id="correctQ" class="text-2xl font-bold text-gray-800 mt-2">12,345</div>
+            </div>
+            <div class="bg-lightBlue p-6 rounded-lg shadow flex flex-col items-center">
+              <div class="text-sm">Lifetime questions incorrect</div>
+              <div id="incorrectQ" class="text-2xl font-bold text-gray-800 mt-2">1,234</div>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6 w-full max-w-4xl">
+            <div class="bg-lightBlue p-6 rounded-lg shadow flex flex-col items-center justify-center">
+              <div class="text-gray-700 font-semibold mb-2">Difficulty Performance</div>
+              <div class="h-64 w-full bg-white rounded flex flex-col items-center justify-center">
+                <h1 class="text-4xl font-bold text-gray-700">0</h1>
+                <p class="mt-2 text-lg">+0 increase in performance (from 0)</p>
+              </div>
+            </div>
+
+            <div class="bg-lightBlue p-6 rounded-lg shadow flex flex-col items-center justify-center">
+              <div class="text-gray-700 font-semibold mb-2">Placeholder</div>
+              <div class="h-64 w-full bg-white rounded flex flex-col items-center justify-center">
+                <h1 class="text-4xl font-bold text-gray-700">placeholder</h1>
+                <p class="mt-2 text-lg">Placeholder</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Section -->
+          <div class="bg-lightBlue p-6 rounded-lg shadow w-full max-w-4xl overflow-x-auto">
+            <div class="text-gray-700 font-semibold mb-4 text-center">Recent Activity</div>
+            <table class="min-w-full text-center">
+              <thead class="bg-paleGray-50">
+                <tr>
+                  <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Quiz Difficulty Avg</th>
+                  <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Time to Completion</th>
+                  <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+                  <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                  <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Quiz Data</th>
+                </tr>
+              </thead>
+              <tbody class="bg-lightBlue divide-y divide-paleGray-50">
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap">5</td>
+                  <td class="px-6 py-4 whitespace-nowrap">56:27</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-4 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">4/5</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">12/1/2003</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <button class="viewQuizBtn px-6 bg-midBlue text-white rounded-full">View this quiz</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap">5</td>
+                  <td class="px-6 py-4 whitespace-nowrap">56:27</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-4 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">4/5</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">12/1/2003</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <button class="viewQuizBtn px-6 bg-midBlue text-white rounded-full">View this quiz</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </main>
+
+        <!-- Chat Button -->
+        <button id="chatButton" class="fixed bottom-6 right-6 bg-lightBlue p-4 rounded-full shadow-lg hover:text-white focus:outline-none z-50">Chat</button>
+
+        <!-- Draggable & Resizable Chat Overlay -->
+<div id="chatOverlay" class="fixed transform translate-y-full opacity-0 transition-all duration-300 z-50 pointer-events-none flex flex-col w-[400px] h-[500px] max-w-full max-h-full rounded-lg shadow-lg" style="bottom: 20px; right: 20px;">
+  <!-- Header (Draggable) -->
+  <div id="chatHeader" class="flex justify-between items-center bg-darkBlue text-white p-4 shadow-md cursor-move">
+    <div class="text-lg font-semibold">Chat</div>
+    <button id="closeChat" class="text-white text-2xl font-bold">&times;</button>
+  </div>
+
+  <!-- Chat Content -->
+  <div id="chatContent" class="flex-1 p-4 overflow-auto bg-white"></div>
+
+  <!-- Input Area -->
+  <div class="p-4 border-t flex bg-paleGray">
+    <input id="chatInput" type="text" placeholder="Type a message..." class="flex-1 border rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <button id="sendButton" class="bg-darkBlue text-paleGray px-4 py-2 rounded-r-md hover:text-white">Send</button>
+  </div>
+
+  <div id="resizeHandle" class="w-4 h-4 bg-blue-600 absolute bottom-0 right-0 cursor-nw-resize rounded-br-md"></div>
 </div>
 
 
-      <!-- Dashboard Content -->
-      <main class="p-6 flex flex-col items-center space-y-6">
 
-        <!-- Summary Cards -->
-        <div class="flex justify-center items-center gap-4 w-full max-w-4xl">
-          <div class="bg-lightBlue p-6 rounded-lg shadow flex flex-col items-center">
-            <div class="text-sm">Lifetime questions correct</div>
-            <div class="text-2xl font-bold text-gray-800 mt-2">12,345</div>
-          </div>
-          <div class="bg-lightBlue p-6 rounded-lg shadow flex flex-col items-center">
-            <div class="text-sm">Lifetime questions incorrect</div>
-            <div class="text-2xl font-bold text-gray-800 mt-2">1,234</div>
-          </div>
-        </div>
+<div id="quizModalOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300">
+  <div id="quizModal" class="bg-white rounded-lg shadow-lg p-6 w-96 max-w-full relative text-center transform translate-y-12 opacity-0 transition-all duration-300">
+    <!-- Close Button -->
+    <button id="closeQuizModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 font-bold text-lg">
+      &times;
+    </button>
 
-        <!-- Charts Section -->
-        <div class="grid md:grid-cols-2 gap-6 w-full max-w-4xl">
-          <div class="bg-lightBlue p-6 rounded-lg shadow flex flex-col items-center">
-            <div class="text-gray-700 font-semibold mb-2">User Growth</div>
-            <div class="h-64 w-full bg-gray-100 rounded flex items-center justify-center text-gray-400">
-              [Chart Placeholder]
-            </div>
-          </div>
-          <div class="bg-lightBlue p-6 rounded-lg shadow flex flex-col items-center">
-            <div class="text-gray-700 font-semibold mb-2">Revenue Trends</div>
-            <div class="h-64 w-full bg-gray-100 rounded flex items-center justify-center text-gray-400">
-              [Chart Placeholder]
-            </div>
-          </div>
-        </div>
-
-        <!-- Table Section -->
-        <div class="bg-lightBlue p-6 rounded-lg shadow w-full max-w-4xl overflow-x-auto">
-          <div class="text-gray-700 font-semibold mb-4 text-center">Recent Activity</div>
-          <table class="min-w-full divide-y divide-gray-200 text-center">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Activity</th>
-                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              </tr>
-            </thead>
-            <tbody class="bg-lightBlue divide-y divide-gray-200">
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">John Doe</td>
-                <td class="px-6 py-4 whitespace-nowrap">Logged In</td>
-                <td class="px-6 py-4 whitespace-nowrap">Nov 22, 2025</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">Jane Smith</td>
-                <td class="px-6 py-4 whitespace-nowrap">Purchased Plan</td>
-                <td class="px-6 py-4 whitespace-nowrap">Nov 21, 2025</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Completed</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">Bob Johnson</td>
-                <td class="px-6 py-4 whitespace-nowrap">Logged Out</td>
-                <td class="px-6 py-4 whitespace-nowrap">Nov 21, 2025</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Inactive</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-      </main>
-
-      <!-- Chat Button -->
-      <button id="chatButton" class="fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none z-50">
-        Chat
+    <!-- Header -->
+    <h2 class="text-2xl font-bold mb-2">Quiz Title</h2>
+    
+    <!-- Subtext -->
+    <p class="text-gray-600 mb-6">This is a description or instructions for the quiz question.</p>
+    
+    <!-- Buttons -->
+    <div class="flex justify-between">
+      <button id="prevBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded">
+        Previous
       </button>
+      <button id="nextBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
+        Next
+      </button>
+    </div>
+  </div>
+</div>
 
-      <!-- Draggable & Resizable Chat Overlay -->
-      <div id="chatOverlay" class="fixed bg-white transform translate-y-full opacity-0 transition-all duration-300 flex flex-col z-40 w-[400px] h-[500px] max-w-full max-h-full rounded-lg shadow-lg" style="bottom: 20px; right: 20px;">
-        <!-- Header (Draggable) -->
-        <div id="chatHeader" class="flex justify-between items-center bg-blue-600 text-white p-4 shadow-md cursor-move">
-          <div class="text-lg font-semibold">Chat</div>
-          <button id="closeChat" class="text-white text-2xl font-bold">&times;</button>
-        </div>
 
-        <!-- Chat Content -->
-        <div id="chatContent" class="flex-1 p-4 overflow-auto">
-          <p class="text-gray-700">Welcome! How can we help you today?</p>
-        </div>
 
-        <!-- Input Area -->
-        <div class="p-4 border-t flex">
-          <input id="chatInput" type="text" placeholder="Type a message..." class="flex-1 border rounded-l-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <button id="sendButton" class="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700">Send</button>
-        </div>
 
-        <div id="resizeHandle" class="w-4 h-4 bg-blue-600 absolute bottom-0 right-0 cursor-nw-resize rounded-br-md"></div>
+
       </div>
 
     </div>
-
   </div>
-
 </div>
-</div>
-
-`
+`;
 
 async function Dashboard(container) {
-    container.innerHTML = DashboardHTML;
-    let userData = [];
-    try {
+  container.innerHTML = DashboardHTML;
+  
+  // --- USER DATA ---
+  let userData = [];
+  try {
     const response = await fetch('/api/current-user');
     if (!response.ok) throw new Error('Failed to fetch user');
     const discordObj = await response.json();
     const userFetch = await fetch(`/api/user/${discordObj.discordId}`);
     userData = await userFetch.json();
-    console.log(userData);
   } catch (error) {
     console.error('Error loading user:', error);
     return;
   }
+  document.getElementById('username').textContent = "Welcome back " + userData.username + "!";
+  document.getElementById('correctQ').textContent = userData.statistics.problemHistory.reduce((acc, e) => acc + e.timesAttempted, 0);
+  document.getElementById('incorrectQ').textContent = userData.statistics.problemHistory.reduce((acc, e) => acc + e.timesSolvedCorrectly, 0) - 
+    userData.statistics.problemHistory.reduce((acc, e) => acc + e.timesAttempted, 0);
 
-    const user = document.getElementById('username');
-
-    const chatButton = document.getElementById('chatButton');
+  // --- CHAT ---
+  const chatButton = document.getElementById('chatButton');
   const chatOverlay = document.getElementById('chatOverlay');
   const closeChat = document.getElementById('closeChat');
   const sendButton = document.getElementById('sendButton');
   const chatContent = document.getElementById('chatContent');
+  const chatInput = document.getElementById('chatInput');
 
-  chatButton.addEventListener('click', () => {
-    chatButton.classList.add('hidden');
-    chatOverlay.classList.remove('translate-y-full', 'opacity-0');
-  });
+  const tempDiv = document.createElement('div');
+  tempDiv.classList = "text-gray-700";
+  tempDiv.textContent = "Welcome back " + userData.username + "! How may I assist you?";
+  chatContent.appendChild(tempDiv);
 
-  closeChat.addEventListener('click', () => {
-    chatButton.classList.remove('hidden');
-    chatOverlay.classList.add('translate-y-full', 'opacity-0');
-  });
+chatButton.addEventListener('click', () => {
+  chatButton.classList.add('hidden');
+  chatOverlay.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
+  chatOverlay.classList.add('pointer-events-auto'); // Enable interactions
+});
 
-    // --- DRAG FUNCTIONALITY ---
-  let isDragging = false;
-  let dragStartX, dragStartY, overlayStartX, overlayStartY;
+closeChat.addEventListener('click', () => {
+  chatButton.classList.remove('hidden');
+  chatOverlay.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none'); // Disable interactions
+  chatOverlay.classList.remove('pointer-events-auto');
+});
 
-  chatHeader.addEventListener('mousedown', (e) => {
+
+  // --- DRAG & RESIZE CHAT ---
+  const chatHeader = document.getElementById('chatHeader');
+  const resizeHandle = document.getElementById('resizeHandle');
+
+  let isDragging = false, dragStartX, dragStartY, overlayStartX, overlayStartY;
+  chatHeader.addEventListener('mousedown', e => {
     isDragging = true;
     dragStartX = e.clientX;
     dragStartY = e.clientY;
@@ -188,34 +226,23 @@ async function Dashboard(container) {
     document.body.style.userSelect = 'none';
     document.body.style.cursor = 'move';
   });
-
-  document.addEventListener('mousemove', (e) => {
+  document.addEventListener('mousemove', e => {
     if (!isDragging) return;
     const dx = e.clientX - dragStartX;
     const dy = e.clientY - dragStartY;
-    let newLeft = overlayStartX + dx;
-    let newTop = overlayStartY + dy;
-
-    // Keep inside viewport
-    newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - chatOverlay.offsetWidth));
-    newTop = Math.max(0, Math.min(newTop, window.innerHeight - chatOverlay.offsetHeight));
-
-    chatOverlay.style.left = newLeft + 'px';
-    chatOverlay.style.top = newTop + 'px';
+    chatOverlay.style.left = Math.max(0, Math.min(overlayStartX + dx, window.innerWidth - chatOverlay.offsetWidth)) + 'px';
+    chatOverlay.style.top = Math.max(0, Math.min(overlayStartY + dy, window.innerHeight - chatOverlay.offsetHeight)) + 'px';
     chatOverlay.style.right = 'auto';
     chatOverlay.style.bottom = 'auto';
   });
-
   document.addEventListener('mouseup', () => {
     isDragging = false;
     document.body.style.userSelect = '';
     document.body.style.cursor = '';
   });
 
-  let isResizing = false;
-  let startX, startY, startWidth, startHeight;
-
-  resizeHandle.addEventListener('mousedown', (e) => {
+  let isResizing = false, startX, startY, startWidth, startHeight;
+  resizeHandle.addEventListener('mousedown', e => {
     isResizing = true;
     startX = e.clientX;
     startY = e.clientY;
@@ -224,74 +251,88 @@ async function Dashboard(container) {
     document.body.style.cursor = 'se-resize';
     document.body.style.userSelect = 'none';
   });
-
-  document.addEventListener('mousemove', (e) => {
+  document.addEventListener('mousemove', e => {
     if (!isResizing) return;
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
-    let newWidth = startWidth + dx;
-    let newHeight = startHeight + dy;
-
-    // Minimum and maximum sizes
-    newWidth = Math.max(300, Math.min(newWidth, window.innerWidth));
-    newHeight = Math.max(300, Math.min(newHeight, window.innerHeight));
-
-    chatOverlay.style.width = newWidth + 'px';
-    chatOverlay.style.height = newHeight + 'px';
+    chatOverlay.style.width = Math.max(300, Math.min(startWidth + dx, window.innerWidth)) + 'px';
+    chatOverlay.style.height = Math.max(300, Math.min(startHeight + dy, window.innerHeight)) + 'px';
   });
-
   document.addEventListener('mouseup', () => {
     isResizing = false;
     document.body.style.cursor = '';
     document.body.style.userSelect = '';
   });
 
-    let messages = [];
-/*
-  function renderMessages(messageType) {
+  // --- CHAT MESSAGES ---
+  let messages = [];
+  function renderMessages() {
     chatContent.innerHTML = '';
     messages.forEach(msg => {
       const div = document.createElement('div');
-      if(messageType == 0){
-        div.className = 'px-3 py-2 rounded bg-gray-100 self-start max-w-[80%] break-words';
-      }
-      else{
-            div.className = 'px-3 py-2 rounded bg-blue-500 text-white max-w-[80%] break-words ml-auto';
-
-      }
-      div.textContent = msg.text;
+      div.className = msg.id === 1 ? 'px-3 py-2 rounded bg-gray-100 self-start max-w-[80%] break-words ml-auto mb-2'
+                                 : 'px-3 py-2 rounded bg-blue-500 text-white max-w-[80%] break-words mr-auto mb-2';
+      div.textContent = msg.message.text;
       chatContent.appendChild(div);
     });
     chatContent.scrollTop = chatContent.scrollHeight;
   }
 
-  */
-  function sendMessage() {
-    console.log("message sent");
+  async function sendMessage() {
     const text = chatInput.value.trim();
     if (!text) return;
-    const msgObj = { text, timestamp: new Date().toISOString() };
-    messages.push(msgObj);
+    messages.push({message: {text, timestamp: new Date().toISOString()}, id: 0});
+    messages.push({message: {text: '...', timestamp: new Date().toISOString()}, id: 1});
     renderMessages();
+    chatInput.disabled = true;
     chatInput.value = '';
+    messages[messages.length-1] = {message: {text: await sendMessageToGemini(text), timestamp: new Date().toISOString()}, id: 1};
+    renderMessages();
+    chatInput.disabled = false;
+  }
+  sendButton.addEventListener('click', sendMessage);
+  chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+  async function sendMessageToGemini(query) {
+    const res = await fetch("http://localhost:3000/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: query }),
+    });
+    const data = await res.json();
+    return data.reply;
   }
 
-  sendButton.addEventListener('click', sendMessage);
-  chatInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') sendMessage();
-  });
+  // --- QUIZ MODAL ---
+  const quizButtons = container.querySelectorAll('.viewQuizBtn');
+  const quizModalOverlay = document.getElementById('quizModalOverlay');
+  const closeQuizModal = document.getElementById('closeQuizModal');
+  const quizContent = document.getElementById('quizContent');
 
-
-    async function sendMessageToGemini(query) {
-  const res = await fetch("http://localhost:3000/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: query }),
+  quizButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    quizModalOverlay.classList.remove('pointer-events-none');
+    setTimeout(() => {
+      quizModalOverlay.classList.remove('opacity-0'); // fade overlay in
+      const quizModal = document.getElementById('quizModal');
+      quizModal.classList.remove('translate-y-12', 'opacity-0'); // slide + fade in modal
+    }, 10);
   });
-  console.log("got this far");
-  const data = await res.json();
-  return data.reply;
-    }
+});
+
+function closeQuizModalFunc() {
+  const quizModal = document.getElementById('quizModal');
+  quizModal.classList.add('translate-y-12', 'opacity-0'); // slide + fade out modal
+  quizModalOverlay.classList.add('opacity-0'); // fade overlay
+  setTimeout(() => {
+    quizModalOverlay.classList.add('pointer-events-none'); // prevent interaction
+  }, 300); // matches duration-300
+}
+
+closeQuizModal.addEventListener('click', closeQuizModalFunc);
+quizModalOverlay.addEventListener('click', e => {
+  if (e.target === quizModalOverlay) closeQuizModalFunc();
+});
+
 }
 
 export default Dashboard;
