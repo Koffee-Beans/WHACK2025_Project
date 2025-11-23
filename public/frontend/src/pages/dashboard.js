@@ -43,24 +43,6 @@ const DashboardHTML = `
             </div>
           </div>
 
-          <div class="grid md:grid-cols-2 gap-6 w-full max-w-4xl">
-            <div class="bg-lightBlue p-6 rounded-lg shadow flex flex-col items-center justify-center">
-              <div class="text-gray-700 font-semibold mb-2">Difficulty Performance</div>
-              <div class="h-64 w-full bg-white rounded flex flex-col items-center justify-center">
-                <h1 class="text-4xl font-bold text-gray-700">0</h1>
-                <p class="mt-2 text-lg">+0 increase in performance (from 0)</p>
-              </div>
-            </div>
-
-            <div class="bg-lightBlue p-6 rounded-lg shadow flex flex-col items-center justify-center">
-              <div class="text-gray-700 font-semibold mb-2">Placeholder</div>
-              <div class="h-64 w-full bg-white rounded flex flex-col items-center justify-center">
-                <h1 class="text-4xl font-bold text-gray-700">placeholder</h1>
-                <p class="mt-2 text-lg">Placeholder</p>
-              </div>
-            </div>
-          </div>
-
           <!-- Table Section -->
           <div class="bg-lightBlue p-6 rounded-lg shadow w-full max-w-4xl overflow-x-auto">
             <div class="text-gray-700 font-semibold mb-4 text-center">Recent Activity</div>
@@ -107,7 +89,7 @@ const DashboardHTML = `
 
 
 <div id="quizModalOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 opacity-0 pointer-events-none transition-opacity duration-300">
-  <div id="quizModal" class="bg-white rounded-lg shadow-lg p-6 w-96 max-w-full relative text-center transform translate-y-12 opacity-0 transition-all duration-300 pointer-events-auto">
+  <div id="quizModal" class="bg-white rounded-lg shadow-lg p-6 w-100 h-fit max-w-full relative text-center transform translate-y-12 opacity-0 transition-all duration-300 pointer-events-auto">
     <!-- Close Button -->
     <button id="closeQuizModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 font-bold text-lg">
       &times;
@@ -115,9 +97,9 @@ const DashboardHTML = `
 
     <!-- Header -->
     <h2 id="question" class="text-2xl font-medium text-center">Test</h2>
-    
+    <hr>
     <!-- Subtext -->
-    <p class="text-gray-600 mb-6">This is a description or instructions for the quiz question.</p>
+    <p id="questionAnswers" class="text-gray-600 mb-6">Test answer</p>
     
     <!-- Buttons -->
     <div class="flex justify-between">
@@ -130,6 +112,7 @@ const DashboardHTML = `
     </div>
   </div>
 </div>
+
 
 
 
@@ -362,24 +345,23 @@ closeChat.addEventListener('click', () => {
   const quizModalOverlay = document.getElementById('quizModalOverlay');
   const closeQuizModal = document.getElementById('closeQuizModal');
   const quizContent = document.getElementById('quizContent');
+  const questionAnswers = document.getElementById('questionAnswers');
 
 quizButtons.forEach(button => {
   button.addEventListener('click', () => {
+    const index = parseInt(button.id.replace('viewQuiz', ''), 10);
+    questionSet = questionDatas[index];
     qNumber = 0;
-    questionSet = questionDatas[button.id.substring(button.id.indexOf('z') + 1)];
     renderQuizModalQ();
 
-    // Show overlay (still doesn't block clicks)
-    quizModalOverlay.classList.remove('opacity-0');
-
-    // Slide + fade in modal
-    const quizModal = document.getElementById('quizModal');
+    quizModalOverlay.classList.remove('opacity-0', 'pointer-events-none');
     quizModal.classList.remove('translate-y-12', 'opacity-0');
+    quizModal.classList.add('pointer-events-auto'); // enable modal interaction
   });
 });
 
 nextBtn.addEventListener('click', () =>{
-  if(qNumber < 3){
+  if(qNumber < 4){
     qNumber++;
     renderQuizModalQ();
   }
@@ -392,9 +374,11 @@ prevBtn.addEventListener('click', () =>{
 })
 
 function closeQuizModalFunc() {
-  const quizModal = document.getElementById('quizModal');
   quizModal.classList.add('translate-y-12', 'opacity-0');
-  quizModalOverlay.classList.add('opacity-0');
+  quizModal.classList.remove('pointer-events-auto');
+  quizModal.classList.add('pointer-events-none');
+
+  quizModalOverlay.classList.add('opacity-0', 'pointer-events-none');
   questionSet = [];
 }
 
@@ -402,6 +386,9 @@ function closeQuizModalFunc() {
 
 function renderQuizModalQ(){
   questionText.innerHTML=questionSet.problems[qNumber].problem;
+  const answer = questionSet.problems[qNumber].answers[questionSet.problems[qNumber].correctAnswer.toLowerCase()];
+  questionAnswers.innerHTML= "The correct answer is " + answer + " and you chose " + (answer == questionSet.choices[qNumber] ? "correctly!" : ("incorrectly with " + questionSet.choices[qNumber]));
+  console.log(questionSet.problems[qNumber].correctAnswer.toLowerCase());
 }
 
 closeQuizModal.addEventListener('click', closeQuizModalFunc);

@@ -58,42 +58,18 @@ app.use(express.json());
 
 const ai = new GoogleGenAI({});
 app.post("/chat", async (req, res) => {
-  console.log("reached");
   const message = req.body.message;
-  if(req.body.base64 != NULL){
-    const contents = [
-  {
-    inlineData: {
-      mimeType: "image/jpeg",
-      data: req.body.base64,
-    },
-  },
-  { text: message },
-];
-    try {
-      const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: contents,
-      });
 
-      res.json({ reply: response.text });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ reply: "Error contacting Gemini API" });
-    }
-  }
-  else{
-    try {
-      const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: message,
-      });
+  try {
+    const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: message,
+    });
 
-      res.json({ reply: response.text });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ reply: "Error contacting Gemini API" });
-    }
+    res.json({ reply: response.text });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ reply: "Error contacting Gemini API" });
   }
 });
 
