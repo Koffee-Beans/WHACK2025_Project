@@ -26,10 +26,10 @@ const HomeHTML = `
   <p class="text-lg mb-8 text-gray-200 drop-shadow transform transition-transform duration-300">
     Learn how to solve math problems fast, find areas of improvement, and build solving skills for the long term
   </p>
-  <button id="getStartedBtn"
+  <a href="login/discord" id="discordLogin"
           class="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700">
     Sign up with Discord
-  </button>
+  </a>
 </section>
 
 <!-- MAIN CONTENT -->
@@ -61,7 +61,8 @@ const HomeHTML = `
 function Home(container) {
   container.innerHTML = HomeHTML;
   const contactLink = container.querySelector('a[href="contact"]');
-  const loginLink = container.querySelector('a[href="login"]');
+  const discordLogin = document.getElementById('discordLogin');
+  //const loginLink = container.querySelector('button[href="login/discord"]');
   const hero = document.getElementById('heroText');
   window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
@@ -75,19 +76,22 @@ function Home(container) {
       navigate('/contact');
     });
   }
-  else if(loginLink){
-    contactLink.addEventListener('click', async (e) => {
+  /*
+  if(discordLogin){
+    discordLogin.addEventListener('click', async (e) => {
       e.preventDefault();
+      navigate('/login/discord');
       /*
       window.location.hash = 'login';
-      */
      const formData = new FormData(e.target);
+     */
+    /*
     await fetch('/login', {
       method: 'POST',
       body: formData
     });
-    });
-  }
+    })
+  }*/
 }
 
 export default Home;
