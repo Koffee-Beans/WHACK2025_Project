@@ -335,7 +335,9 @@ closeChat.addEventListener('click', () => {
     if (!urlResponse.ok) {
       throw new Error('Failed to fetch Gemini URL');
     }
-    const { geminiUrl } = await urlResponse.json();
+    const textResponse = await urlResponse.text();
+    console.log('Raw response:', textResponse);
+    const { geminiUrl } = JSON.parse(textResponse);
     const res = await fetch(geminiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
