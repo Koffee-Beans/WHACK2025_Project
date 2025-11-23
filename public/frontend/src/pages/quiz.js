@@ -227,30 +227,6 @@ async function Quiz(container) {
         box.classList.add('hidden');
     }
 
-    // Loop through the quizData to calculate score and update problem history
-    for (let i = 0; i < quizData.length; i++) {
-        const questionData = quizData[i];
-        const selected = selectedAnswer.get(i); // The answer selected by the user
-        const correct = questionData.correct;   // The correct answer for the question
-
-        console.log(`Problem ${i} Data:`, questionData);
-        console.log(`Problem ${i} ID Check (questionData._id):`, questionData.id);
-
-        // Update the score based on user's answer
-        if (selected === correct) {
-            finalScore += 6;  // 6 points for correct answer
-        } else if (selected === undefined) {
-            finalScore += 1.5;  // 1.5 points for unanswered question
-        }
-
-        // Populate problemHistoryUpdates with relevant information
-        problemHistoryUpdates.push(questionData.id);
-        userChoices.push(selected || 'unanswered');  // Store user's choices (unanswered if no selection)
-    }
-
-    resultEl.textContent = `You scored ${score} out of ${quizData.length * 6}!`;
-    resultEl.classList.remove('hidden');
-
     let userId;
     try {
         const userResponse = await fetch('/api/current-user');
@@ -266,6 +242,61 @@ async function Quiz(container) {
         resultEl.classList.remove('hidden');
         return;
     }
+
+    // Loop through the quizData to calculate score and update problem history
+    for (let i = 0; i < quizData.length; i++) {
+        const questionData = quizData[i];
+        const selected = selectedAnswer.get(i); // The answer selected by the user
+        const correct = questionData.correct;   // The correct answer for the question
+
+        fetch(`/api/user/${userId}/increment-played`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'User updated successfully') {
+                console.log(`Played counter incremented for user ${userId}`);
+            } else {
+                console.error('Error incrementing played count:', data.message);
+            }
+        })
+        .catch(error => console.error('Error making API request for played increment:', error));
+
+        console.log(`Problem ${i} Data:`, questionData);
+        console.log(`Problem ${i} ID Check (questionData._id):`, questionData.id);
+
+        // Update the score based on user's answer
+        if (selected === correct) {
+            finalScore += 6;  // 6 points for correct answer
+            fetch(`/api/user/${userId}/increment-correct`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'User updated successfully') {
+                    console.log(`Correct counter incremented for user ${userId}`);
+                } else {
+                    console.error('Error incrementing correct count:', data.message);
+                }
+            })
+            .catch(error => console.error('Error making API request for correct increment:', error));
+        } else if (selected === undefined) {
+            finalScore += 1.5;  // 1.5 points for unanswered question
+        }
+
+        // Populate problemHistoryUpdates with relevant information
+        problemHistoryUpdates.push(questionData.id);
+        userChoices.push(selected || 'unanswered');  // Store user's choices (unanswered if no selection)
+    }
+
+    resultEl.textContent = `You scored ${score} out of ${quizData.length * 6}!`;
+    resultEl.classList.remove('hidden');
 
     let quizId;
     try {
