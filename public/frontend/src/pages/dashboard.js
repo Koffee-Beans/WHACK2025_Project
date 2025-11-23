@@ -307,7 +307,8 @@ closeChat.addEventListener('click', () => {
         messages[messages.length-1] = {message: {text: await sendMessageToGemini(text), timestamp: new Date().toISOString()}, id: 1};
     }
     else{
-      const fullPrompt = `Respond to the following question using the problem given. The problem will be labeled 'this is the problem' and the question will be labeled 'this is the question': this is the problem:  ${questionSet.problems[qNumber].problem}  this is the question: ` + text;
+      const solutions = questionSet.problems[qNumber].solutions.join('\n');
+      const fullPrompt = `Respond to the following question using the problem and solutions given. The problem will be labeled 'this is the problem', the solutions will be labeled 'these are the solutions' and the question will be labeled 'this is the question': this is the problem:  ${questionSet.problems[qNumber].problem}, these are the solutions: ${solutions},  this is the question: ` + text + ', try to guide the asker of the question using one of the solutions as reference if they are on the right track.';
       messages[messages.length-1] = {message: {text: await sendMessageToGemini(fullPrompt), timestamp: new Date().toISOString()}, id: 1};
     }
     renderMessages();
@@ -363,6 +364,7 @@ function closeQuizModalFunc() {
   const quizModal = document.getElementById('quizModal');
   quizModal.classList.add('translate-y-12', 'opacity-0');
   quizModalOverlay.classList.add('opacity-0');
+  questionSet = [];
 }
 
 
