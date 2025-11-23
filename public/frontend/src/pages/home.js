@@ -53,7 +53,7 @@ const HomeHTML = `
       </h3>
       <p class="text-gray-600">
         Your time is precious, so treat it as such. Instead of organizing thousands of practice problems 
-        and keeping track of your progress, let us do the hard work for you
+        and keeping track of your progress, let us do the hard work for you.
       </p>
     </div>
   </section>
