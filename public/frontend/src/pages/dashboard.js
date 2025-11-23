@@ -331,7 +331,12 @@ closeChat.addEventListener('click', () => {
   sendButton.addEventListener('click', sendMessage);
   chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
   async function sendMessageToGemini(query) {
-    const res = await fetch("http://localhost:3000/chat", {
+    const urlResponse = await fetch('/api/gemini-url');
+    if (!urlResponse.ok) {
+      throw new Error('Failed to fetch Gemini URL');
+    }
+    const { geminiUrl } = await urlResponse.json();
+    const res = await fetch(geminiUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: query }),
