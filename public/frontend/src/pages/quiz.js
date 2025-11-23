@@ -126,14 +126,6 @@ async function Quiz(container) {
     const current = quizData[currentQuestion];
     questionEl.innerHTML = `<p>${current.question}</p>`;
     answersEl.innerHTML = '';
-    // Create a MutationObserver to trigger MathJax after DOM changes
-    const observer = new MutationObserver(() => {
-      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-      observer.disconnect(); // Disconnect observer once it's done
-    });
-
-    // Start observing the answers container for changes
-    observer.observe(answersEl, { childList: true });
     current.answers.forEach(answer => {
       const btn = document.createElement('button');
       btn.innerHTML = answer;
@@ -152,11 +144,6 @@ async function Quiz(container) {
         updateProgress(currentQuestion, 2);
       }
     });
-
-    setTimeout(() => {
-      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-    }, 100);
-
     // Change button text if last question
     //nextBtn.textContent = currentQuestion === quizData.length - 1 ? "Submit" : "Next Question";
   }
