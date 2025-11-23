@@ -51,3 +51,19 @@
   background-position: center;
   background-attachment: fixed;
 }
+
+.latex {
+  display: inline-block;
+  margin: 0 0.5rem; /* Adjust as needed */
+}
+
+.latex img {
+  max-width: 100%;  /* Make images responsive if needed */
+  max-height: 2rem; /* Adjust the height for consistency */
+}
+
+.latexcenter {
+  display: block; /* Change back to block if centering the block itself */
+  margin: 0 auto; /* Centers the block horizontally */
+  text-align: center; /* Centers inline content within the block */
+}
