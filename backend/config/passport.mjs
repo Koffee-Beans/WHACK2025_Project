@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy as DiscordStrategy } from 'passport-discord';
 import mongoose from 'mongoose';
+import { GoogleGenAI } from "@google/genai";
 
 const User = mongoose.model('User');
 

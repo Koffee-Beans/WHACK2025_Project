@@ -1,3 +1,53 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --midBlue: #0047AB;
+  --darkBlue: #000080;
+  --lightBlue: #82C8E5;
+  --paleGray: #6D8196;
+}
+
+.text-midBlue {
+  color: var(--midBlue);
+}
+
+.text-darkBlue {
+  color: var(--darkBlue);
+}
+
+.text-lightBlue {
+  color: var(--lightBlue);
+}
+
+.text-paleGray {
+  color: var(--paleGray);
+}
+
+.bg-midBlue {
+  background-color: var(--midBlue);
+}
+
+.bg-darkBlue {
+  background-color: var(--darkBlue);
+}
+
+.bg-lightBlue {
+  background-color: var(--lightBlue);
+}
+
+.bg-paleGray {
+  background-color: var(--paleGray);
+}
+
+.bg-paleGray-50 {
+  background-color: rgba(109, 129, 150, 0.25);
+}
+
+.bg-blueblur {
+  background-image: url('../images/BlueBlur.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}

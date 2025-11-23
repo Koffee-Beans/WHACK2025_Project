@@ -2,13 +2,14 @@ import Home from './pages/home.js';
 import Contact from './pages/contact.js';
 import Login from './pages/login.js';
 import Quiz from './pages/quiz.js';
+import Dashboard from './pages/dashboard.js';
 
 const app = document.getElementById('app');
 
 function getPath() {
   let path = window.location.pathname;
 
-  const valid = ['/contact', '/login', '/quiz', '/'];
+  const valid = ['/contact', '/login', '/quiz', '/dashboard', '/'];
   if (!valid.includes(path)) {
     window.history.replaceState({}, '/', '/');
     path = '/';
@@ -22,6 +23,7 @@ function router() {
 
   switch (path) {
     case '/contact':
+      console.log("run");
       app.innerHTML = Contact;
       break;
     case '/login':
@@ -29,6 +31,9 @@ function router() {
       break;
     case '/quiz':
       Quiz(app);
+      break;
+    case '/dashboard':
+      Dashboard(app);
       break;
     default:
       Home(app);
