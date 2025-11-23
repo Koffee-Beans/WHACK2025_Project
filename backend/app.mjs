@@ -12,6 +12,7 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 import loginRoutes from './routes/loginRoutes.mjs';
+import quizRoutes from './routes/quizRoutes.mjs';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -32,7 +33,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/login', loginRoutes);
+app.use(quizRoutes);
 
+app.use((req, res, next) => {
+    if (!req.user) {
+        res.redirect('/');
+    }
+    next();
+});
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public', 'index.html'));
