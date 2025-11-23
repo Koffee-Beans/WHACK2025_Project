@@ -38,8 +38,8 @@ const DashboardHTML = `
               <div id="correctQ" class="text-2xl font-bold text-gray-800 mt-2">12,345</div>
             </div>
             <div class="bg-lightBlue p-6 rounded-lg shadow flex flex-col items-center">
-              <div class="text-sm">Lifetime questions played</div>
-              <div id="playedQ" class="text-2xl font-bold text-gray-800 mt-2">1,234</div>
+              <div class="text-sm">Lifetime questions incorrect</div>
+              <div id="incorrectQ" class="text-2xl font-bold text-gray-800 mt-2">1,234</div>
             </div>
           </div>
 
@@ -158,8 +158,9 @@ async function Dashboard(container) {
     return;
   }
   document.getElementById('username').textContent = "Welcome back " + userData.username + "!";
-  document.getElementById('correctQ').textContent = userData.statistics.correct;
-  document.getElementById('playedQ').textContent = userData.statistics.played;
+  document.getElementById('correctQ').textContent = userData.statistics.problemHistory.reduce((acc, e) => acc + e.timesAttempted, 0);
+  document.getElementById('incorrectQ').textContent = userData.statistics.problemHistory.reduce((acc, e) => acc + e.timesSolvedCorrectly, 0) - 
+    userData.statistics.problemHistory.reduce((acc, e) => acc + e.timesAttempted, 0);
 
   console.log(userData);
 
