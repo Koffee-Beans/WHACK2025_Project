@@ -24,6 +24,8 @@ const User = mongoose.model('User');
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({ extended: false }));
 
+app.use(express.json());
+
 app.use(session({
     secret: 'secret',
     resave: false,

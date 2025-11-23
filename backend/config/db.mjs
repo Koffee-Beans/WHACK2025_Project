@@ -9,13 +9,23 @@ const ProblemHistory = new mongoose.Schema({
     streak: { type: Number, default: 0 },
 });
 
+const Quiz = new mongoose.Schema({
+    id: { type: String },
+    problems: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Problem', required: true }],
+    choices: [String],
+    score: { type: Number },
+    date: { type: Date, default: Date.now }
+});
+
 const User = new mongoose.Schema({
 	discordId: { type: String, required: true, unique: true },
     username: { type: String, required: true },
     avatar: { type: String },
     statistics: {
         problemHistory: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ProblemHistory' }] , default: [] }, // problem history using problemhistory schema
+        quizHistory: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'QuizHistory' }], default: [] },
         difficultyLevel: { type: Number, default: 5 }, // difficulty level, average difficulty of problems to start with
+        prevDifficultyLevel: { type: Number, default: null },
         rd: { type: Number, default: 5 }, // rd, kinda like tetrio's rd
         recentRate: { type: Number, default: undefined }, // recent rate on problems
         // more stats here later
@@ -48,3 +58,4 @@ const Problem = new mongoose.Schema({
 mongoose.model('User', User);
 mongoose.model('Problem', Problem);
 mongoose.model('ProblemHistory', ProblemHistory);
+mongoose.model('Quiz', Quiz);

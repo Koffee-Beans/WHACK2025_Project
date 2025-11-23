@@ -211,27 +211,115 @@ async function Quiz(container) {
     })
   }
 
-  function submitQuiz() {
-    clearInterval(timerInterval);
+  async function submitQuiz() {
+    clearInterval(timerInterval); // Stop the timer
     questionEl.classList.add('hidden');
     answersEl.classList.add('hidden');
     nextBtn.classList.add('hidden');
     previousBtn.classList.add('hidden');
     submitBtn.classList.add('hidden');
+
+    let finalScore = 0;
+    let problemHistoryUpdates = [];  // Ensure this is initialized here
+    const userChoices = [];
+
+    // Hide progress boxes
     for (let i = 0; i < quizData.length; i++) {
         const box = document.getElementById(`progress-${i}`);
         box.classList.add('hidden');
     }
-    selectedAnswer.forEach((v, k) => {
-        const correctAnswer = quizData[k].correct;
-        if(v == correctAnswer){
-            score++;
-        }
-    })
-    resultEl.textContent = `You scored ${score} out of ${quizData.length}!`;
-    resultEl.classList.remove('hidden');
-  }
 
+    // Loop through the quizData to calculate score and update problem history
+    for (let i = 0; i < quizData.length; i++) {
+        const questionData = quizData[i];
+        const selected = selectedAnswer.get(i); // The answer selected by the user
+        const correct = questionData.correct;   // The correct answer for the question
+
+        console.log(`Problem ${i} Data:`, questionData);
+        console.log(`Problem ${i} ID Check (questionData._id):`, questionData.id);
+
+        // Update the score based on user's answer
+        if (selected === correct) {
+            finalScore += 6;  // 6 points for correct answer
+        } else if (selected === undefined) {
+            finalScore += 1.5;  // 1.5 points for unanswered question
+        }
+
+        // Populate problemHistoryUpdates with relevant information
+        problemHistoryUpdates.push(questionData.id);
+        userChoices.push(selected || 'unanswered');  // Store user's choices (unanswered if no selection)
+    }
+
+    resultEl.textContent = `You scored ${score} out of ${quizData.length * 6}!`;
+    resultEl.classList.remove('hidden');
+
+    let userId;
+    try {
+        const userResponse = await fetch('/api/current-user');
+        const userData = await userResponse.json();
+        if (userData && userData.discordId) {
+            userId = userData.discordId;
+        } else {
+            throw new Error('User is not logged in or discordId not found.');
+        }
+    } catch (error) {
+        console.error('Error fetching current user ID:', error);
+        resultEl.textContent = `Error: Could not submit results. Score: ${finalScore}`;
+        resultEl.classList.remove('hidden');
+        return;
+    }
+
+    let quizId;
+    try {
+        const randomIdResponse = await fetch('/api/random-id');
+        if (!randomIdResponse.ok) throw new Error('Failed to fetch random ID');
+        const randomIdData = await randomIdResponse.json();
+        quizId = randomIdData.id;  // Assuming the response contains an `id` field
+    } catch (error) {
+        console.error('Error fetching random ID:', error);
+        resultEl.textContent = `Error: Could not fetch random ID for the quiz. Score: ${finalScore}`;
+        resultEl.classList.remove('hidden');
+        return;
+    }
+
+    const quizPayload = {
+        id: quizId,  // Random quiz ID
+        problems: problemHistoryUpdates,  // The history of the problems and whether answers were correct
+        choices: userChoices,  // The user's choices for each question
+        score: finalScore,  // The user's score
+        date: new Date().toISOString()  // The date when the quiz was completed
+    };
+
+    try {
+      console.log(quizPayload)
+      console.log('User ID:', userId);
+        const apiResponse = await fetch(`/api/user/${userId}/newquiz`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(quizPayload)
+        });
+
+        if (!apiResponse.ok) {
+            const errorData = await apiResponse.json();
+            throw new Error(`API error: ${errorData.error || apiResponse.statusText}`);
+        }
+
+        const successData = await apiResponse.json();
+        console.log('Quiz submitted successfully:', successData);
+
+        // --- 6. Display Result ---
+        resultEl.textContent = `You scored ${finalScore} out of ${quizData.length * 6}! Results saved.`;
+        resultEl.classList.remove('hidden');
+
+    } catch (error) {
+        console.error('Error submitting quiz to API:', error);
+        resultEl.textContent = `You scored ${finalScore} out of ${quizData.length * 6}! Results **could not be saved**.`;
+        resultEl.classList.remove('hidden');
+    }
+}
+  
   // Start quiz
   loadQuestion();
   startTimer();
