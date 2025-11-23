@@ -7,6 +7,7 @@ const QuizHTML = `
     <h1 class="text-2xl font-bold text-white">EduLearn</h1>
     <nav class="space-x-6 text-lg">
       <a id="homeButton" href="/dashboard" class="text-white hover:text-blue-600">Return Home</a>
+      <p id="timer" class="text-white"></p>
     </nav>
   </div>
 </header>
@@ -111,7 +112,7 @@ async function Quiz(container) {
   function startTimer() {
     timerInterval = setInterval(() => {
       timer--;
-      timerEl.textContent = timer;
+      timerEl.textContent = "Time remaining: " + Math.floor(timer/60) + ":" + (timer - Math.floor(timer/60) * 60);
       if (timer <= 0) {
         clearInterval(timerInterval);
         submitQuiz();
@@ -216,6 +217,7 @@ async function Quiz(container) {
     previousBtn.classList.add('hidden');
     submitBtn.classList.add('hidden');
     homeBtn.classList.remove('hidden');
+    timerEl.classList.add('hidden');
 
     let finalScore = 0;
     let problemHistoryUpdates = [];  // Ensure this is initialized here
