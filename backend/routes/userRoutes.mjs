@@ -204,4 +204,44 @@ router.post('/api/user/:userid/newquiz', async (req, res) => {
     }
 });
 
+router.post('/api/user/:userid/increment-correct', async (req, res) => {
+    const { userid } = req.params;
+
+    try {
+        const user = await User.findOneAndUpdate(
+            { discordId: userid },
+            { $inc: { 'statistics.correct': 1 } },
+            { new: true }
+        );
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ message: 'User updated successfully', user });
+    }
+    catch (error) {
+        console.error('Error updating user history:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+});
+
+router.post('/api/user/:userid/increment-played', async (req, res) => {
+    const { userid } = req.params;
+
+    try {
+        const user = await User.findOneAndUpdate(
+            { discordId: userid },
+            { $inc: { 'statistics.played': 1 } },
+            { new: true }
+        );
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ message: 'User updated successfully', user });
+    }
+    catch (error) {
+        console.error('Error updating user history:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+});
+
 export default router;

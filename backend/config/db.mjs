@@ -28,6 +28,8 @@ const User = new mongoose.Schema({
         prevDifficultyLevel: { type: Number, default: null },
         rd: { type: Number, default: 5 }, // rd, kinda like tetrio's rd
         recentRate: { type: Number, default: undefined }, // recent rate on problems
+        correct: { type: Number, default: 0 },
+        played: { type: Number, default: 0 }
         // more stats here later
     },
 });
