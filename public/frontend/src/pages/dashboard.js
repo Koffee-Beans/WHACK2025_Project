@@ -67,36 +67,12 @@ const DashboardHTML = `
             <table class="min-w-full text-center">
               <thead class="bg-paleGray-50">
                 <tr>
-                  <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Quiz Difficulty Avg</th>
-                  <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Time to Completion</th>
                   <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
                   <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                   <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Quiz Data</th>
                 </tr>
               </thead>
-              <tbody class="bg-lightBlue divide-y divide-paleGray-50">
-                <tr>
-                  <td class="px-6 py-4 whitespace-nowrap">5</td>
-                  <td class="px-6 py-4 whitespace-nowrap">56:27</td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-4 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">4/5</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">12/1/2003</td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <button class="viewQuizBtn px-6 bg-midBlue text-white rounded-full">View this quiz</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="px-6 py-4 whitespace-nowrap">5</td>
-                  <td class="px-6 py-4 whitespace-nowrap">56:27</td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-4 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">4/5</span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">12/1/2003</td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <button class="viewQuizBtn px-6 bg-midBlue text-white rounded-full">View this quiz</button>
-                  </td>
-                </tr>
+              <tbody id="qTable" class="bg-lightBlue divide-y divide-paleGray-50">
               </tbody>
             </table>
           </div>
@@ -104,7 +80,9 @@ const DashboardHTML = `
         </main>
 
         <!-- Chat Button -->
-        <button id="chatButton" class="fixed bottom-6 right-6 bg-lightBlue p-4 rounded-full shadow-lg hover:text-white focus:outline-none z-50">Chat</button>
+        <button id="chatButton" class="fixed bottom-6 right-6 bg-lightBlue p-4 rounded-full shadow-lg hover:text-white focus:outline-none z-50">
+  Chat
+</button>
 
         <!-- Draggable & Resizable Chat Overlay -->
 <div id="chatOverlay" class="fixed transform translate-y-full opacity-0 transition-all duration-300 z-50 pointer-events-none flex flex-col w-[400px] h-[500px] max-w-full max-h-full rounded-lg shadow-lg" style="bottom: 20px; right: 20px;">
@@ -128,8 +106,8 @@ const DashboardHTML = `
 
 
 
-<div id="quizModalOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300">
-  <div id="quizModal" class="bg-white rounded-lg shadow-lg p-6 w-96 max-w-full relative text-center transform translate-y-12 opacity-0 transition-all duration-300">
+<div id="quizModalOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 opacity-0 pointer-events-none transition-opacity duration-300">
+  <div id="quizModal" class="bg-white rounded-lg shadow-lg p-6 w-96 max-w-full relative text-center transform translate-y-12 opacity-0 transition-all duration-300 pointer-events-auto">
     <!-- Close Button -->
     <button id="closeQuizModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 font-bold text-lg">
       &times;
@@ -186,6 +164,13 @@ async function Dashboard(container) {
 
   console.log(userData);
 
+  const questionDatas = [];
+  userData.statistics.quizHistory.forEach(q => {
+    questionDatas.push(q);
+  });
+  console.log(questionDatas);
+  //const questions = userData.statistics.problemHistory
+
   // --- CHAT ---
   const chatButton = document.getElementById('chatButton');
   const chatOverlay = document.getElementById('chatOverlay');
@@ -193,6 +178,38 @@ async function Dashboard(container) {
   const sendButton = document.getElementById('sendButton');
   const chatContent = document.getElementById('chatContent');
   const chatInput = document.getElementById('chatInput');
+
+  const qTable = document.getElementById('qTable');
+  const questionText = document.getElementById('question');
+
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+
+  let qNumber = 0;
+  /*
+  class="px-6 py-4 whitespace-nowrap"
+  */
+
+  questionDatas.forEach(q => {
+    const tempTr = document.createElement('tr');
+    for(let i = 0; i < 3; i++){
+      const tempTd = document.createElement('td');
+      tempTd.classList = "px-6 py-4 whitespace-nowrap";
+      if(i == 0){
+        tempTd.innerText = q.score + "/30";
+      }
+      else if(i == 1){
+        tempTd.innerText = q.date.substring(0, q.date.indexOf('T')) + " at " + q.date.substring(q.date.indexOf('T') + 1, q.date.indexOf('T') + 6);
+      }
+      else{
+        tempTd.innerHTML = `<button id="viewQuiz${questionDatas.indexOf(q)}" class="viewQuizBtn px-6 bg-midBlue text-white rounded-full">View this quiz</button>`;
+      }
+      tempTr.appendChild(tempTd);
+    }
+    qTable.appendChild(tempTr);
+  });
+
+  let questionSet = [];
 
   const tempDiv = document.createElement('div');
   tempDiv.classList = "text-gray-700";
@@ -287,7 +304,13 @@ closeChat.addEventListener('click', () => {
     renderMessages();
     chatInput.disabled = true;
     chatInput.value = '';
-    messages[messages.length-1] = {message: {text: await sendMessageToGemini(text), timestamp: new Date().toISOString()}, id: 1};
+    if(questionSet.length == 0){
+        messages[messages.length-1] = {message: {text: await sendMessageToGemini(text), timestamp: new Date().toISOString()}, id: 1};
+    }
+    else{
+      const fullPrompt = `Respond to the following question using the problem given. The problem will be labeled 'this is the problem' and the question will be labeled 'this is the question': this is the problem:  ${questionSet.problems[qNumber].problem}  this is the question: ` + text;
+      messages[messages.length-1] = {message: {text: await sendMessageToGemini(fullPrompt), timestamp: new Date().toISOString()}, id: 1};
+    }
     renderMessages();
     chatInput.disabled = false;
   }
@@ -309,24 +332,44 @@ closeChat.addEventListener('click', () => {
   const closeQuizModal = document.getElementById('closeQuizModal');
   const quizContent = document.getElementById('quizContent');
 
-  quizButtons.forEach(button => {
+quizButtons.forEach(button => {
   button.addEventListener('click', () => {
-    quizModalOverlay.classList.remove('pointer-events-none');
-    setTimeout(() => {
-      quizModalOverlay.classList.remove('opacity-0'); // fade overlay in
-      const quizModal = document.getElementById('quizModal');
-      quizModal.classList.remove('translate-y-12', 'opacity-0'); // slide + fade in modal
-    }, 10);
+    qNumber = 0;
+    questionSet = questionDatas[button.id.substring(button.id.indexOf('z') + 1)];
+    renderQuizModalQ();
+
+    // Show overlay (still doesn't block clicks)
+    quizModalOverlay.classList.remove('opacity-0');
+
+    // Slide + fade in modal
+    const quizModal = document.getElementById('quizModal');
+    quizModal.classList.remove('translate-y-12', 'opacity-0');
   });
 });
 
+nextBtn.addEventListener('click', () =>{
+  if(qNumber < 3){
+    qNumber++;
+    renderQuizModalQ();
+  }
+})
+prevBtn.addEventListener('click', () =>{
+  if(qNumber > 0){
+    qNumber--;
+    renderQuizModalQ();
+  }
+})
+
 function closeQuizModalFunc() {
   const quizModal = document.getElementById('quizModal');
-  quizModal.classList.add('translate-y-12', 'opacity-0'); // slide + fade out modal
-  quizModalOverlay.classList.add('opacity-0'); // fade overlay
-  setTimeout(() => {
-    quizModalOverlay.classList.add('pointer-events-none'); // prevent interaction
-  }, 300); // matches duration-300
+  quizModal.classList.add('translate-y-12', 'opacity-0');
+  quizModalOverlay.classList.add('opacity-0');
+}
+
+
+
+function renderQuizModalQ(){
+  questionText.innerHTML=questionSet.problems[qNumber].problem;
 }
 
 closeQuizModal.addEventListener('click', closeQuizModalFunc);
