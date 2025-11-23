@@ -19,14 +19,24 @@ router.get('/api/current-user', async (req, res) => {
 router.get('/api/user/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const user = await User.findOne({ discordId: id }).populate({
-            path: 'statistics.problemHistory',
-            model: 'ProblemHistory',
-            populate: {
-                path: 'problem',
-                model: 'Problem'
+        const user = await User.findOne({ discordId: id }).populate([
+            {
+                path: 'statistics.problemHistory',
+                model: 'ProblemHistory',
+                populate: {
+                    path: 'problem',
+                    model: 'Problem'
+                }
+            },
+            {
+                path: 'statistics.quizHistory',
+                model: 'Quiz',
+                populate: {
+                    path: 'problems',
+                    model: 'Problem'
+                }
             }
-        });
+        ]);
 
         if (!user) {
             res.json(null);

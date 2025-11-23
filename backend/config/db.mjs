@@ -23,7 +23,7 @@ const User = new mongoose.Schema({
     avatar: { type: String },
     statistics: {
         problemHistory: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ProblemHistory' }] , default: [] }, // problem history using problemhistory schema
-        quizHistory: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'QuizHistory' }], default: [] },
+        quizHistory: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Quiz' }], default: [] },
         difficultyLevel: { type: Number, default: 5 }, // difficulty level, average difficulty of problems to start with
         prevDifficultyLevel: { type: Number, default: null },
         rd: { type: Number, default: 5 }, // rd, kinda like tetrio's rd
