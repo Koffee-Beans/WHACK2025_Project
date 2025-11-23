@@ -17,7 +17,7 @@ async function fetchProblemData(year, level, version, number) {
 
         const $ = load(data);
 
-        const problemElements = $('#Problem').closest('h2').nextUntil(stopSelector).slice(0, -1);
+        const problemElements = $('[id^="Problem"]').closest('h2').nextUntil(stopSelector).slice(0, -1);
 
         let problem = '';
         problemElements.each(function() {
@@ -27,15 +27,15 @@ async function fetchProblemData(year, level, version, number) {
         const answerChoices = [];
         const imgAltTexts = []
 
-        $('#Problem').closest('h2').nextUntil(stopSelector).last().find('img').each( (_, imgElement) => {
+        $('[id^="Problem"]').closest('h2').nextUntil(stopSelector).last().find('img').each( (_, imgElement) => {
             if ($(imgElement).next().is('h2')) {
-                    imgAltTexts.push($(imgElement).attr('alt').trim());
-                    return false;
-                }
-            imgAltTexts.push($(imgElement).attr('alt').trim());
+                imgAltTexts.push($(imgElement).attr('alt').trim());
+                return false;
+            }
+            imgAltTexts.push($(imgElement).attr('alt')?.trim());
         });
 
-        const imgAltText = imgAltTexts.join(' ')
+        const imgAltText = imgAltTexts.join(' ');
 
         if (imgAltText) {
             const cleanedAltText = imgAltText.replace(/\s/g, '');
@@ -94,19 +94,40 @@ async function fetchCorrectAnswer(year, level, version, number) {
 // TODO: function to save to mongo
 
 async function main() {
-    // TODO: loop over all below variables
     for (let year = 2002; year <= 2025; year++) {
-        const level = 12, version = 'B', number = 1;
-        const contest = [year, level, version, number];
-        const { problem, answers, solutions } = await fetchProblemData(year, level, version, number);
+        for (let level of [10, 12]) {
+            for (let version of ['A', 'B']) {
+                for (let number = 1; number <= 25; number++) {
+                    const contest = [ [year, level, version, number] ];
+                    const { problem, answers, solutions } = await fetchProblemData(year, level, version, number);
+                    console.log(problem, year, level, version, number)
 
-        const correctAnswer = await fetchCorrectAnswer(year, level, version, number);
-        const category = { alg: false, combo: false, geo: false, nt: false };
+                    const correctAnswer = await fetchCorrectAnswer(year, level, version, number);
+                    const category = { alg: false, combo: false, geo: false, nt: false };
 
-        const fullData = { problem, answers, correctAnswer, solutions, contest, category };
-        console.log(fullData);
+                    const fullData = { problem, answers, correctAnswer, solutions, year, level, version, number, category };
+                    try {
+                        const searchDatabase = await Problem.findOne({ problem });
+                        if (!searchDatabase) {
+                            await Problem.create(fullData);
+                        }
+                        else {
+                            await searchDatabase.year.push(year);
+                            await searchDatabase.level.push(level);
+                            await searchDatabase.version.push(version);
+                            await searchDatabase.number.push(number);
+                            await searchDatabase.save();
+                        }
+                    }
+                    catch (err) {
+                        console.log(fullData);
+                    }
+                }
+            }
+        }
     }
-    // TODO: save to mongo call function above
 }
 
+// const debug = await fetchProblemData(2002, 12, 'A', 25);
+// console.log(debug);
 main();

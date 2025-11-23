@@ -22,7 +22,10 @@ const Problem = new mongoose.Schema({
     },
     correctAnswer: { type: String }, // correct answer (still need to scrape)
     solutions: [ String ], // solutions
-    contest: [ [Number, Number, String, Number] ], // array of year, level, version, number
+    year: [ Number ],
+    level: [ Number ],
+    version: [ String ],
+    number: [ Number ],
     category: { // what style of problem it is (need to categorize, maybe using gemini)
         alg: { type: Boolean, default: false },
         combo: { type: Boolean, default: false },
