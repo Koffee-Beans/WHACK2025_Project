@@ -35,6 +35,12 @@ app.use(passport.session());
 app.use('/login', loginRoutes);
 app.use(quizRoutes);
 
+app.use((req, res, next) => {
+    if (!req.user) {
+        res.redirect('/');
+    }
+    next();
+});
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public', 'index.html'));
