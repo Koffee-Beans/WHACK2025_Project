@@ -4,7 +4,7 @@ const HomeHTML = `
 <div>
 <header class="w-full py-6 bg-paleGray-50 shadow fixed top-0 left-0 z-40">
   <div class="max-w-6xl mx-auto flex justify-between items-center px-4">
-    <h1 class="text-2xl font-bold text-white">EduLearn</h1>
+    <h1 class="text-2xl font-bold text-white">MathByte</h1>
     <nav class="space-x-6 text-lg">
       <a href="login/discord" class="text-white hover:text-blue-600">Login</a>
     </nav>

@@ -11,7 +11,7 @@ const DashboardHTML = `
       <div class="flex-1 flex flex-col overflow-auto">
 
         <header class="flex items-center justify-between bg-paleGray-50 p-4 shadow">
-          <div class="text-white text-xl font-semibold">Dashboard</div>
+          <div class="text-white text-xl font-semibold">MathByte</div>
           <div class="flex items-center space-x-4">
             <a href="/quiz" class="text-white bg-paleGray hover:bg-darkBlue px-3 py-2 border rounded-md">Take a Quiz</a>
             <a href="/login/logout" class="text-white bg-paleGray hover:bg-darkBlue px-3 py-2 border rounded-md">Sign Out</a>

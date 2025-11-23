@@ -1,7 +1,7 @@
 const Contact = `
   <header class="w-full py-6 bg-white shadow">
     <div class="max-w-6xl mx-auto flex justify-between items-center px-4">
-      <h1 class="text-2xl font-bold">EduLearn</h1>
+      <h1 class="text-2xl font-bold">MathByte</h1>
       <nav class="space-x-6 text-lg">
         <a href="index.html#features" class="hover:text-blue-600">Features</a>
         <a href="index.html#courses" class="hover:text-blue-600">Courses</a>
@@ -39,11 +39,6 @@ const Contact = `
       </form>
     </div>
   </section>
-
-  <!-- Footer -->
-  <footer class="bg-gray-900 text-white py-6 text-center mt-10">
-    <p>© 2025 EduLearn. All rights reserved.</p>
-  </footer>
 `;
 
 export default Contact;
