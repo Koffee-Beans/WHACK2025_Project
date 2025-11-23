@@ -338,7 +338,7 @@ closeChat.addEventListener('click', () => {
     const textResponse = await urlResponse.text();
     console.log('Raw response:', textResponse);
     const { geminiUrl } = JSON.parse(textResponse);
-    const res = await fetch(geminiUrl, {
+    const res = await fetch('https://whack-2025.onrender.com/chat', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: query }),
