@@ -19,10 +19,10 @@ const HomeHTML = `
 <section id="heroText"
          class="fixed inset-0 flex flex-col justify-center items-center text-center px-4 z-20">
   <h2 class="text-8xl font-bold mb-6 text-white drop-shadow transform transition-transform duration-300">
-    Solve math smarter, not harder
+    Bringing together technology and math
   </h2>
   <p class="text-lg mb-8 text-gray-200 drop-shadow transform transition-transform duration-300">
-    Learn how to solve math problems fast, find areas of improvement, and build solving skills for the long term
+    MathByte is all about combining tech and math and delivering it in byte sized pieces to help you accelerate
   </p>
   <a href="login/discord" id="discordLogin"
           class="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700">
@@ -49,7 +49,7 @@ const HomeHTML = `
     <!-- Feature Cards -->
     <div class="p-6 bg-white shadow rounded-xl relative z-10">
       <h3 class="text-xl font-semibold mb-2">
-        What if there was a faster way to improve in mathematics?
+        Solve math smarter, not harder
       </h3>
       <p class="text-gray-600">
         Your time is precious, so treat it as such. Instead of organizing thousands of practice problems 
@@ -72,8 +72,7 @@ const HomeHTML = `
       Track your progress overtime to see improvement
       </h3>
       <h3 class="text-xl font-semibold mb-2">
-      Scan your work to understand exactly where 
-      you went wrong and how you can improve in the future
+      Learn where you went wrong and how you can improve in the future
       </h3>
     </div>
   </section>
