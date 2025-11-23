@@ -39,7 +39,7 @@ async function fetchProblemData(year, level, version, number) {
 
         if (imgAltText) {
             const cleanedAltText = imgAltText.replace(/\s/g, '');
-            const regex = /([A-E])[\}\)\s]*([\s\S]*?)(?=(?:\\qquad|\$))/g;
+            const regex = /([A-E])[\}\)\s]*([\s\S]*?)(?=(?:\\qquad|\$|\\\\\\\\))/g;
             let match;
             while ((match = regex.exec(cleanedAltText)) !== null) {
                 answerChoices.push(`${match[2].trim()}`);
@@ -128,6 +128,6 @@ async function main() {
     }
 }
 
-// const debug = await fetchProblemData(2002, 12, 'A', 25);
+// const debug = await fetchProblemData(2002, 12, 'A', 1);
 // console.log(debug);
 main();

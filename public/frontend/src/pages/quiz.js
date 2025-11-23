@@ -48,22 +48,27 @@ const QuizHTML = `
 
 `;
 
-function Quiz(container) {
+async function Quiz(container) {
   container.innerHTML = QuizHTML;
 
-  const quizData = [
-    { question: "What is the capital of France?", answers: ["Paris", "London", "Berlin", "Madrid"], correct: "Paris" },
-    { question: "Which planet is known as the Red Planet?", answers: ["Earth", "Mars", "Jupiter", "Venus"], correct: "Mars" },
-    { question: "Who wrote 'Hamlet'?", answers: ["Mark Twain", "Charles Dickens", "William Shakespeare", "Leo Tolstoy"], correct: "William Shakespeare" },
-    { question: "What is the largest ocean on Earth?", answers: ["Atlantic", "Indian", "Pacific", "Arctic"], correct: "Pacific" },
-    { question: "Which element has the chemical symbol 'O'?", answers: ["Gold", "Oxygen", "Silver", "Hydrogen"], correct: "Oxygen" }
-  ];
+  let quizData = [];
+
+  try {
+    const response = await fetch('/api/problems/random?count=5');
+    if (!response.ok) throw new Error('Failed to fetch problems');
+    quizData = await response.json();
+    
+  } catch (error) {
+    console.error('Error loading quiz:', error);
+    return;
+  }
+
   const selectedButton = new Map();
   const selectedAnswer = new Map();
 
   let currentQuestion = 0;
   let score = 0;
-  let timer = 60;
+  let timer = 180 * quizData.length;
   let timerInterval;
 
   const questionEl = document.getElementById('question');
@@ -119,11 +124,19 @@ function Quiz(container) {
 
   function loadQuestion() {
     const current = quizData[currentQuestion];
-    questionEl.textContent = current.question;
+    questionEl.innerHTML = `<p>${current.question}</p>`;
     answersEl.innerHTML = '';
+    // Create a MutationObserver to trigger MathJax after DOM changes
+    const observer = new MutationObserver(() => {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+      observer.disconnect(); // Disconnect observer once it's done
+    });
+
+    // Start observing the answers container for changes
+    observer.observe(answersEl, { childList: true });
     current.answers.forEach(answer => {
       const btn = document.createElement('button');
-      btn.textContent = answer;
+      btn.innerHTML = answer;
       if(answer == selectedAnswer.get(currentQuestion)){
         btn.className = 'bg-gray-400 text-white hover:bg-gray-300 py-2 px-4 rounded w-full text-left';
       }
@@ -139,6 +152,10 @@ function Quiz(container) {
         updateProgress(currentQuestion, 2);
       }
     });
+
+    setTimeout(() => {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }, 100);
 
     // Change button text if last question
     //nextBtn.textContent = currentQuestion === quizData.length - 1 ? "Submit" : "Next Question";

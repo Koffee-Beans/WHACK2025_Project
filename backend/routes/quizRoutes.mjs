@@ -8,7 +8,7 @@ router.get('/api/problems/random', async (req, res) => {
     try {
         const count = parseInt(req.query.count) || 5;
         
-        const filter = {$or: [{ "answers.e": { $exists: false } }, { "answers.e": null }]};
+        const filter = {$and: [{ "answers.e": { $exists: true } }, { "answers.e": { $ne: null } }]};
         
         const problems = await Problem.aggregate([
             { $match: filter },
