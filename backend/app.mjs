@@ -22,8 +22,6 @@ const __dirname = path.dirname(__filename);
 
 const User = mongoose.model('User');
 
-app.set('trust proxy', 1);
-
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({ extended: false }));
 
@@ -57,8 +55,6 @@ app.get('/', (req, res) => {
 app.get('/:id', (req, res) => {
   res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
-
-app.use(express.json());
 
 const ai = new GoogleGenAI({});
 app.post("/chat", async (req, res) => {

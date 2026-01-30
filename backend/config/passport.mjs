@@ -10,7 +10,6 @@ passport.use(new DiscordStrategy({
     clientSecret: process.env.DISCORD_CLIENT_SECRET,
     callbackURL: process.env.DISCORD_CALLBACK_URL || '',
     scope: ['identify'],
-    proxy: true,
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let user = await User.findOne({ discordId: profile.id });
