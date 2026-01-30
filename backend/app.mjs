@@ -22,6 +22,8 @@ const __dirname = path.dirname(__filename);
 
 const User = mongoose.model('User');
 
+app.set('trust proxy', 1);
+
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({ extended: false }));
 
