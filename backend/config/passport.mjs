@@ -2,26 +2,14 @@ import passport from 'passport';
 import { Strategy as DiscordStrategy } from 'passport-discord';
 import mongoose from 'mongoose';
 import { GoogleGenAI } from "@google/genai";
-import OAuth2Strategy from "passport-oauth2";
 
 const User = mongoose.model('User');
-
-const originalCreateOAuthError =
-  OAuth2Strategy.prototype._createOAuthError;
-
-OAuth2Strategy.prototype._createOAuthError = function (err, result) {
-  console.error("=== DISCORD TOKEN ERROR ===");
-  console.error("ERR:", err);
-  console.error("RESULT:", result);
-  console.error("==========================");
-  return originalCreateOAuthError.call(this, err, result);
-};
 
 passport.use(new DiscordStrategy({
     clientID: process.env.DISCORD_CLIENT_ID,
     clientSecret: process.env.DISCORD_CLIENT_SECRET,
-    callbackURL: process.env.DISCORD_CALLBACK_URL || '',
-    scope: ['identify']
+    callbackURL: "https://whack-2025.onrender.com/login/discord/callback",
+    scope: ['identify'],
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let user = await User.findOne({ discordId: profile.id });
