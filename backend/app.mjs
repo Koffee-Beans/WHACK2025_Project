@@ -7,7 +7,6 @@ import session from 'express-session';
 import passport from 'passport';
 import { GoogleGenAI } from "@google/genai";
 
-
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -15,6 +14,9 @@ import loginRoutes from './routes/loginRoutes.mjs';
 import quizRoutes from './routes/quizRoutes.mjs';
 import userRoutes from './routes/userRoutes.mjs';
 import envRoutes from './routes/envRoutes.mjs';
+
+import https from 'https';
+https.globalAgent.options.rejectUnauthorized = false;
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
