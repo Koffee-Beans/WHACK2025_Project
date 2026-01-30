@@ -31,14 +31,7 @@ app.use(session({
     secret: 'secret',
     resave: false,
     saveUninitialized: true,
-    proxy: true,
-    cookie: {
-      secure: true,
-      sameSite: "lax"
-    }
 }));
-
-app.set("trust proxy", 1);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -50,7 +43,7 @@ app.use(envRoutes);
 
 app.use((req, res, next) => {
     if (!req.user) {
-        return res.redirect('/');
+        res.redirect('/');
     }
     next();
 });
@@ -62,6 +55,8 @@ app.get('/', (req, res) => {
 app.get('/:id', (req, res) => {
   res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
+
+app.use(express.json());
 
 const ai = new GoogleGenAI({});
 app.post("/chat", async (req, res) => {
